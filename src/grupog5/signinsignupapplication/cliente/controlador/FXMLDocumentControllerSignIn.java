@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grupog5.pkg2020.applicationsigninsignup.clientapp;
+package grupog5.signinsignupapplication.cliente.controlador;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,7 +16,7 @@ import javafx.scene.control.Label;
  *
  * @author 2dam
  */
-public class FXMLDocumentController implements Initializable {
+public class FXMLDocumentControllerSignIn implements Initializable {
     
     @FXML
     private Label label;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grupog5.pkg2020.applicationsigninsignup.clientapp;
+package grupog5.signinsignupapplication.cliente.application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
