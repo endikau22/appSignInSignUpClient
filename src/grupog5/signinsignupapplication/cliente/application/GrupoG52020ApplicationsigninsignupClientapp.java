@@ -5,6 +5,9 @@
  */
 package grupog5.signinsignupapplication.cliente.application;
 
+import grupog5.signinsignupapplication.cliente.controlador.FXMLDocumentControllerSignIn;
+import grupog5.signinsignupapplication.cliente.modelo.SignFactory;
+import interfaz.Signable;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,12 +22,16 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        //No se porque necesito el load() no estatico.
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("grupog5.signinsignupapplication.cliente.vista.FXMLDocumentSignIn.fxml"));
+        Parent root = (Parent)loader.load();
         
-        Scene scene = new Scene(root);
+        Signable signable = SignFactory.getSignable();
         
-        stage.setScene(scene);
-        stage.show();
+        FXMLDocumentControllerSignIn controladorSignIn = (FXMLDocumentControllerSignIn)loader.getController();
+        controladorSignIn.setStage(stage);
+        controladorSignIn.initStage(root,signable); 
+        controladorSignIn.inicializarComponentesVentana();
     }
 
     /**

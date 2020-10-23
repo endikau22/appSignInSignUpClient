@@ -1,19 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Contiene el modelo de la aplicación
  */
 package grupog5.signinsignupapplication.cliente.modelo;
 
 import interfaz.Signable;
 
 /**
- *
- * @author endika
+ * Factoria de la Interface Signable.
+ * @author Eneko, Endika, Markel
  */
 public class SignFactory {
-    
-    public Signable getSignable(){
+    /**
+     * Recoge una instancia de la clase que implementa la interface.
+     * @return Un Signable.
+     */
+    public static Signable getSignable(){
         return new SignImplementation();
     }
 }
