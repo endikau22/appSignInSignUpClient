@@ -22,15 +22,19 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        //No se porque necesito el load() no estatico.
+        //New FXMLLoader Añadir el fxml de signin que es la ventana principal
         FXMLLoader loader = new FXMLLoader(getClass().getResource("grupog5.signinsignupapplication.cliente.vista.FXMLDocumentSignIn.fxml"));
+        //
         Parent root = (Parent)loader.load();
-        
+        //Nueva Instancia signable 
         Signable signable = SignFactory.getSignable();
-        
+        //Relacionamos el documento FXML con el controlador.
         FXMLDocumentControllerSignIn controladorSignIn = (FXMLDocumentControllerSignIn)loader.getController();
+        //Llamada al método setStage del controlador de la ventana signIn
         controladorSignIn.setStage(stage);
-        controladorSignIn.initStage(root,signable); 
+        //
+        controladorSignIn.setSignable(signable);
+        controladorSignIn.initStage(root); 
         controladorSignIn.inicializarComponentesVentana();
     }
 

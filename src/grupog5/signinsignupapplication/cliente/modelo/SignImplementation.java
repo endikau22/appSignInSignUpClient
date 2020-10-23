@@ -21,6 +21,7 @@ public class SignImplementation implements Signable {
     @Override
     public void signIn(User user) {
         Mensaje mensaje = new Mensaje(user,Accion.SIGNIN);
+        
     }
 
     /**
@@ -41,5 +42,8 @@ public class SignImplementation implements Signable {
         Mensaje mensaje = new Mensaje(user,Accion.LOGOUT);
     }
 
+    public  void respuestaSignIn(Mensaje mensaje){
+        
+    }
     
 }

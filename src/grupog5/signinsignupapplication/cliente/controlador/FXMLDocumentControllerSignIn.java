@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Contiene el modelo de datos de la aplicación cliente.
  */
 package grupog5.signinsignupapplication.cliente.controlador;
 
@@ -24,17 +22,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import user.User;
 
 /**
  *
- * @author 2dam
+ * @author Eneko, Endika, Markel
  */
-public class FXMLDocumentControllerSignIn implements Initializable {
+public class FXMLDocumentControllerSignIn {
     
     private final Logger LOGGER = Logger.getLogger("grupog5.signinsignupapplication.cliente.controlador.FXMLDocumentControllerSignIn");
     private Stage stage;
-    private final int MAX_LENGTH_USUARIO = 20;
-    private final int MAX_LENGTH_CONTRASENA = 20;
+    private Signable signable;
+    private final int MAX_LENGTH = 20;
     
     @FXML
     private TextField txtFieldUsuario;
@@ -44,16 +43,21 @@ public class FXMLDocumentControllerSignIn implements Initializable {
     private Button btnEntrar;
     
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+
     /**
      * Asigna al atributo Stage de la clase una Stage recibida como parámetro.
      * @param stage Una ventana JavaFx.
      */
     public void setStage(Stage stage) {
         this.stage = stage;    
+    }
+
+    public Signable getSignable() {
+        return signable;
+    }
+
+    public void setSignable(Signable signable) {
+        this.signable = signable;
     }
     
     /**
@@ -68,7 +72,7 @@ public class FXMLDocumentControllerSignIn implements Initializable {
      * Inicializa una Stage.
      * @param root Un nodo 
      */
-    public void initStage(Parent root,Signable signable) {
+    public void initStage(Parent root) {
         LOGGER.log(Level.INFO,"Inicializando la ventana login. ");
         //Creación de  una nueva escena
         Scene scene = new Scene(root);
@@ -77,7 +81,7 @@ public class FXMLDocumentControllerSignIn implements Initializable {
         //Asignación de un título a la ventana
         stage.setTitle("Sign In");
         //Asignar tamaño fijo a la ventana
-        stage.setResizable(false);
+        stage.setResizable(false); 
         
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
         //Este evento se lanza cuando la ventana esta a punto de aparecer.
@@ -90,6 +94,7 @@ public class FXMLDocumentControllerSignIn implements Initializable {
         //Ejecutar método evento acción clickar botón
         //btnEntrar.setOnAction(this::accionBoton); LoHemos Hecho Con SceneBuider.
         //btnEntrar.setOnAction(this::eventoClickBoton);
+        
         stage.show();
     }
     
@@ -113,7 +118,17 @@ public class FXMLDocumentControllerSignIn implements Initializable {
     
     @FXML
     private void accionBoton(ActionEvent event){
-        
+        if(txtFieldUsuario.getText().length()>MAX_LENGTH ||
+                pswFieldContrasena.getText().length()>MAX_LENGTH){
+            muestraMensajeAlertaCamposMuyLargos();
+        }else if (comprobarEspaciosBlancos(txtFieldUsuario.getText()) ||
+                comprobarEspaciosBlancos(pswFieldContrasena.getText())){
+            muestraMensajeAlertaEspacios();    
+        }else{
+            enviarDatosServidorBBDD();
+            //Falta la respuesta del servidor
+            
+        }
     }
 
     public void inicializarComponentesVentana() {
@@ -123,9 +138,32 @@ public class FXMLDocumentControllerSignIn implements Initializable {
         txtFieldUsuario.setPromptText("Introduce tu nombre.");
     }
     
-    private void muestraMensajeAlertaCamposVacios(){
+    private void muestraMensajeAlertaCamposMuyLargos(){
             Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
-                    + "deben estar informados.",ButtonType.OK);
+                    + "deben tener una longitud menor de "+MAX_LENGTH+".",ButtonType.OK);
             alert.showAndWait();
+    }
+    
+    
+
+    private boolean comprobarEspaciosBlancos(String text) {
+        String textoSinEspacios = text.trim();
+        Boolean hayEspacios = false;
+        for(Character t:text.toCharArray()){
+            if(t.equals(""))
+                hayEspacios = true;
+        }
+        return hayEspacios;
+    }
+
+    private void muestraMensajeAlertaEspacios() {
+        Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
+                    + " no deben tener espacios.",ButtonType.OK);
+            alert.showAndWait();
+    }
+
+    private void enviarDatosServidorBBDD() {
+        User myUser = new User (txtFieldUsuario.getText(),pswFieldContrasena.getText());
+        signable.signIn(myUser);
     }
 }
