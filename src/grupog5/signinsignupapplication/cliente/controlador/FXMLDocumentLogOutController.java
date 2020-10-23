@@ -5,23 +5,14 @@
  */
 package grupog5.signinsignupapplication.cliente.controlador;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 
 /**
- * FXML Controller class
- *
- * @author endika
+ * FXML Controller class para la scena LogOut
+ * @version 1.0
+ * @since 23/10/2020
+ * @author Eneko, Endika, Markel
  */
-public class FXMLDocumentLogOutController implements Initializable {
+public class FXMLDocumentLogOutController extends Controller {
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+   
 }

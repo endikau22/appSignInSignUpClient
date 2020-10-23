@@ -3,7 +3,16 @@
  */
 package grupog5.signinsignupapplication.cliente.modelo;
 
+import excepciones.ExcepcionPasswdIncorrecta;
+import excepciones.ExcepcionUserNoExiste;
+import excepciones.ExcepcionUserYaExiste;
 import interfaz.Signable;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mensaje.Accion;
 import mensaje.Mensaje;
 import user.User;
@@ -13,14 +22,18 @@ import user.User;
  * @author Eneko, Endika, Markel
  */
 public class SignImplementation implements Signable {
+    
+    private Socket unSocket;
 
     /**
      * Comunica con la aplicación servidor para autenticar al usuario.
      * @param user Un usuario de la aplicación
      */
     @Override
-    public void signIn(User user) {
+    public User signIn(User user) throws ExcepcionUserNoExiste,ExcepcionPasswdIncorrecta{
         Mensaje mensaje = new Mensaje(user,Accion.SIGNIN);
+        this.enviarInformacion(mensaje);
+        return user;
         
     }
 
@@ -29,8 +42,9 @@ public class SignImplementation implements Signable {
      * @param user Un usuario de la aplicación
      */
     @Override
-    public void signUp(User user) {
+    public void signUp(User user) throws ExcepcionUserYaExiste{
         Mensaje mensaje = new Mensaje(user,Accion.SIGNUP);
+        this.enviarInformacion(mensaje);
     }
 
     /**
@@ -40,10 +54,23 @@ public class SignImplementation implements Signable {
     @Override
     public void logOut(User user) {
         Mensaje mensaje = new Mensaje(user,Accion.LOGOUT);
+        this.enviarInformacion(mensaje);
     }
 
-    public  void respuestaSignIn(Mensaje mensaje){
-        
+    public  void setSocket(){
+        this.unSocket = new Socket();
     }
     
+    public void enviarInformacion(Mensaje mensaje){
+        try {
+            ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
+            salidaMensaje.writeObject(mensaje);
+        } catch (IOException ex) {
+            Logger.getLogger(SignImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void recibirInformacion(){
+        
+    }
 }
