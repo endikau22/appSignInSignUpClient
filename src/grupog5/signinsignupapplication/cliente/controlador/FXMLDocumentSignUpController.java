@@ -5,23 +5,12 @@
  */
 package grupog5.signinsignupapplication.cliente.controlador;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
-
 /**
  * FXML Controller class
  *
  * @author endika
  */
-public class FXMLDocumentSignUpController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+public class FXMLDocumentSignUpController{
+  
     
 }

@@ -36,7 +36,7 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
         LOGGER.log(Level.INFO, "Método start de la aplicación");
         //New FXMLLoader Añadir el fxml de signin que es la ventana principal
         FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentSignIn.fxml"));
+                getResource("../vista/FXMLDocumentSignIn.fxml"));
         //Parent es una clase gráfica de nodos xml son nodos.
         Parent root = (Parent)loader.load();
         //Nueva Instancia signable 
@@ -50,8 +50,7 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
         //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
         controladorSignIn.initStage(root);
         //Llamada al método inicializarComponenentesVentana del controlador de la ventana signIn.
-        controladorSignIn.inicializarComponentesVentana();
-    }
+        }
 
     /**
      * Arranca una aplicación JAvaFX

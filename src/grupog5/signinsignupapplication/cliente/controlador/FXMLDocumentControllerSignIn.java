@@ -6,6 +6,7 @@ package grupog5.signinsignupapplication.cliente.controlador;
 import excepciones.ExcepcionPasswdIncorrecta;
 import excepciones.ExcepcionUserNoExiste;
 import interfaz.Signable;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -65,6 +67,10 @@ public class FXMLDocumentControllerSignIn {
      * Botón Acceso a la aplicación
      */
     @FXML private Button btnEntrar;
+    /**
+     * Hyperlink de registro.
+     */
+    @FXML private Hyperlink hplRegistrate;
     
     /**
      * Label Mensajes Error usuario,contraseña.
@@ -134,6 +140,10 @@ public class FXMLDocumentControllerSignIn {
         pswFieldContrasena.textProperty().addListener(this::cambioTexto);
         //Ejecutar método evento acción clickar botón
         btnEntrar.setOnAction(this::accionBoton);
+        //Ejecutar método Hyperlink clickado
+        hplRegistrate.setOnAction(this::hyperlinkClickado);
+        //Llamada al método inicializarComponenentesVentana del controlador de la ventana signIn.
+        inicializarComponentesVentana();
         //Hace visible la pantalla
         stage.show();
     }
@@ -184,7 +194,6 @@ public class FXMLDocumentControllerSignIn {
      * Tratar el click del botón
      * @param event Un evento del botón
      */
-    @FXML
     private void accionBoton(ActionEvent event){
         LOGGER.info("Iniciando ControllerSignIn.accionBoton");
         //Si cumplen las condiciones enviar datos.
@@ -192,6 +201,16 @@ public class FXMLDocumentControllerSignIn {
                 &&comprobarEspaciosBlancos(txtFieldUsuario)&&comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
             enviarDatosServidorBBDD();    
         }     
+    }
+    
+    public void hyperlinkClickado(ActionEvent event){
+        LOGGER.log(Level.INFO,"Evento del Hyperlink clickado. ");
+        try{
+           abrirVentanaSignUp(); 
+        }catch(Exception e){
+            e.getMessage();
+        }
+        
     }
     /**
      * Muestra un Alert Error, si el campo es superior en longitud al preestablecido en una Constante.
@@ -274,9 +293,13 @@ public class FXMLDocumentControllerSignIn {
      */
     private Boolean maximoCaracteres(TextField field) {
         LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
+        //booleano iniciado a true.
         Boolean numeroCaracteresCorrectos = true;
+        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
         if(field.getText().trim().length()>MAX_LENGTH){
+            //booleana a false
                 numeroCaracteresCorrectos = false;
+                //mostrar una alert
                 muestraMensajeAlertaLongitudCampo();
         }
         return numeroCaracteresCorrectos;
@@ -302,9 +325,11 @@ public class FXMLDocumentControllerSignIn {
      * Cargar siguiente ventana.
      */
     private void abrirVentanaLogOut() throws Exception{
-        //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
+        LOGGER.log(Level.INFO,"Abriendo ventana LogOut. ");
+        try{
+            //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
             FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentLogOut.fxml"));
+                    getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentLogOut.fxml"));
             //Parent es una clase gráfica de nodos xml son nodos.
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
@@ -315,7 +340,33 @@ public class FXMLDocumentControllerSignIn {
             controladorLogOut.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorLogOut.initStage(root);
-            //Llamada al método inicializarComponenentesVentana del controlador de la ventana signIn.
-            controladorLogOut.inicializarComponentesVentana();
+            }catch(IOException e){
+            lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+        }
     }
+
+    /**
+     * Carga la ventana signup para que el usuario se registre.
+     */
+    private void abrirVentanaSignUp() {
+        LOGGER.log(Level.INFO,"Abriendo ventana SignUp. ");
+        try{
+            //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
+            FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentSignUp.fxml"));
+            //Parent es una clase gráfica de nodos xml son nodos.
+            Parent root = (Parent)loader.load();
+            //Relacionamos el documento FXML con el controlador que le va a controlar.
+            FXMLDocumentLogOutController controladorLogOut = (FXMLDocumentLogOutController)loader.getController();
+            //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
+            controladorLogOut.setStage(stage);
+            //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
+            controladorLogOut.setSignable(signable);
+            //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
+            controladorLogOut.initStage(root);
+        }catch(IOException e){
+            lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+        }
+    }
+
 }

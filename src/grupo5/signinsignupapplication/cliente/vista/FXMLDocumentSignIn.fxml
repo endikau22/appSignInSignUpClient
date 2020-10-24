@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPaneIniciarSesion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="617.0" xmlns="http://javafx.com/javafx/11.0.1"
+<BorderPane fx:id="borderPaneIniciarSesion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="617.0" 
+            xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="grupog5.signinsignupapplication.cliente.controlador.FXMLDocumentControllerSignIn">
    <top>
@@ -81,7 +82,7 @@
       <VBox prefHeight="277.0" prefWidth="155.0" BorderPane.alignment="CENTER" />
    </left>
    <bottom>
-      <Button fx:id="btnEntrar" mnemonicParsing="false" onAction="#accionBoton" text="ENTRAR" BorderPane.alignment="CENTER">
+      <Button fx:id="btnEntrar" mnemonicParsing="false" text="ENTRAR" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="80.0" />
          </BorderPane.margin>

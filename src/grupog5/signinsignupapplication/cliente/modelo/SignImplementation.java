@@ -7,7 +7,6 @@ import excepciones.ExcepcionPasswdIncorrecta;
 import excepciones.ExcepcionUserNoExiste;
 import excepciones.ExcepcionUserYaExiste;
 import interfaz.Signable;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -28,9 +27,10 @@ public class SignImplementation implements Signable {
     /**
      * Comunica con la aplicación servidor para autenticar al usuario.
      * @param user Un usuario de la aplicación
+     * @throws excepciones.ExcepcionPasswdIncorrecta
      */
     @Override
-    public User signIn(User user) throws ExcepcionUserNoExiste,ExcepcionPasswdIncorrecta{
+    public User signIn(User user) throws ExcepcionPasswdIncorrecta,ExcepcionUserNoExiste{
         Mensaje mensaje = new Mensaje(user,Accion.SIGNIN);
         this.enviarInformacion(mensaje);
         return user;
@@ -40,6 +40,7 @@ public class SignImplementation implements Signable {
     /**
      * Comunica con la aplicación servidor para dar de alta al usuario.
      * @param user Un usuario de la aplicación
+     * @throws excepciones.ExcepcionUserYaExiste
      */
     @Override
     public void signUp(User user) throws ExcepcionUserYaExiste{
