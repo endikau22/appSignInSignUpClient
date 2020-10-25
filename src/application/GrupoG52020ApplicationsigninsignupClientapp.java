@@ -1,10 +1,10 @@
 /**
  *Contiene la aplicación de la aplicación Cliente
  */
-package grupog5.signinsignupapplication.cliente.application;
+package application;
 
-import grupog5.signinsignupapplication.cliente.controlador.FXMLDocumentControllerSignIn;
-import grupog5.signinsignupapplication.cliente.modelo.SignFactory;
+import controlador.FXMLDocumentControllerSignIn;
+import modelo.SignFactory;
 import interfaz.Signable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +36,7 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
         LOGGER.log(Level.INFO, "Método start de la aplicación");
         //New FXMLLoader Añadir el fxml de signin que es la ventana principal
         FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("../vista/FXMLDocumentSignIn.fxml"));
+                getResource("/vista/FXMLDocumentSignIn.fxml"));
         //Parent es una clase gráfica de nodos xml son nodos.
         Parent root = (Parent)loader.load();
         //Nueva Instancia signable 

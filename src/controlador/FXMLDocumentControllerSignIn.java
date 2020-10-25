@@ -1,7 +1,7 @@
 /**
  * Contiene el modelo de datos de la aplicación cliente.
  */
-package grupog5.signinsignupapplication.cliente.controlador;
+package controlador;
 
 import excepciones.ExcepcionPasswdIncorrecta;
 import excepciones.ExcepcionUserNoExiste;

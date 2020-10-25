@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grupog5.signinsignupapplication.cliente.controlador;
+package controlador;
 
 import interfaz.Signable;
 import java.util.logging.Level;

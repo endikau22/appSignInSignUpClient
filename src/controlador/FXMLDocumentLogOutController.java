@@ -3,17 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package grupog5.signinsignupapplication.cliente.controlador;
+package controlador;
 
 import interfaz.Signable;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import user.User;
 
@@ -24,7 +26,7 @@ import user.User;
  * @since 23/10/2020
  * @author Eneko, Endika, Markel
  */
-public class FXMLDocumentLogOutController extends Controller {
+public class FXMLDocumentLogOutController{
    /**
      * Logger para trazar los pasos del código.
      */
@@ -95,7 +97,7 @@ public class FXMLDocumentLogOutController extends Controller {
   
         //Ejecutar método evento acción clickar botón
         btnSalir.setOnAction(this::accionBoton);
-        inicializarComponentesVentana();
+        //inicializarComponentesVentana();
         //Hace visible la pantalla
         stage.show();
     }
@@ -106,9 +108,16 @@ public class FXMLDocumentLogOutController extends Controller {
      */
     private void accionBoton(ActionEvent event){
         LOGGER.info("Iniciando ControllerLogOut.accionBoton");
-        //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
-        signable.logOut(usuario);
-        //Abrir ventana signin
+        try {
+            //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
+            signable.logOut(usuario);
+            //Abrir ventana signin
+        } catch (SQLException ex) {
+            LOGGER.log(Level.INFO,"Execepción SQL al intentar LogOut");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Error al salir, espera unos segundos."
+                    ,ButtonType.OK);
+            alert.showAndWait();
+        }
         
     }
     

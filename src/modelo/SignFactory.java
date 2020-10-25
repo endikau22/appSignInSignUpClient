@@ -1,7 +1,7 @@
 /**
  * Contiene el modelo de la aplicación
  */
-package grupog5.signinsignupapplication.cliente.modelo;
+package modelo;
 
 import interfaz.Signable;
 
