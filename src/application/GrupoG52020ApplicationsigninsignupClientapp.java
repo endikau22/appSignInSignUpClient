@@ -3,7 +3,7 @@
  */
 package application;
 
-import controlador.FXMLDocumentControllerSignIn;
+import controlador.FXMLDocumentSignInController;
 import modelo.SignFactory;
 import interfaz.Signable;
 import java.util.logging.Level;
@@ -14,7 +14,7 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 /**
- * @version 1
+ * @version 1.0
  * @since 23/10/2020
  * @author Endika, Eneko, Markel
  */
@@ -42,7 +42,7 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
         //Nueva Instancia signable 
         Signable signable = SignFactory.getSignable();
         //Relacionamos el documento FXML con el controlador que le va a controlar.
-        FXMLDocumentControllerSignIn controladorSignIn = (FXMLDocumentControllerSignIn)loader.getController();
+        FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
         //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
         controladorSignIn.setStage(stage);
         //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
@@ -57,6 +57,7 @@ public class GrupoG52020ApplicationsigninsignupClientapp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //Este método arranca la aplicación llamando al método start.
         launch(args);
     }
     

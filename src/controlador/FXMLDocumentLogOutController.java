@@ -112,7 +112,7 @@ public class FXMLDocumentLogOutController{
             //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
             signable.logOut(usuario);
             //Abrir ventana signin
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             LOGGER.log(Level.INFO,"Execepción SQL al intentar LogOut");
             Alert alert = new Alert(Alert.AlertType.ERROR,"Error al salir, espera unos segundos."
                     ,ButtonType.OK);

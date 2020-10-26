@@ -33,7 +33,7 @@ import user.User;
  * @since 23/10/2020
  * @author Eneko, Endika, Markel
  */
-public class FXMLDocumentControllerSignIn {
+public class FXMLDocumentSignInController {
     /**
      * Logger para trazar los pasos del código.
      */
@@ -148,11 +148,14 @@ public class FXMLDocumentControllerSignIn {
         stage.show();
     }
     
-    
+    /**
+     * Inicializa los componentes de la ventana.
+     */
     public void inicializarComponentesVentana() {
         LOGGER.info("Iniciando ControllerSignIn::inicializarComponentesVentana");
-        //Asignar un texto de fondo en el campo contraseña.
+        //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
         pswFieldContrasena.setPromptText("Introduce tu contraseña. (4 a 20 caracters)");
+        //Asignar texto cuando el campo está desenfocado.
         txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. (4 a 20 caracters)");
     }
     
@@ -184,7 +187,7 @@ public class FXMLDocumentControllerSignIn {
             //Deshabilitar botón
             btnEntrar.setDisable(true);  
         }else{//Los dos campos están informados.
-            //Habilitar botón
+            //Habilitar botón 
             btnEntrar.setDisable(false);
             //Añadir tooltip al botón.
             btnEntrar.setTooltip(new Tooltip("Pulsa para acceder"));
@@ -197,18 +200,43 @@ public class FXMLDocumentControllerSignIn {
     private void accionBoton(ActionEvent event){
         LOGGER.info("Iniciando ControllerSignIn.accionBoton");
         //Si cumplen las condiciones enviar datos.
-        if(maximoCaracteres(txtFieldUsuario)&&maximoCaracteres((TextField)pswFieldContrasena)&&minimoCaracteres(txtFieldUsuario)&&minimoCaracteres((TextField)pswFieldContrasena)
-                &&comprobarEspaciosBlancos(txtFieldUsuario)&&comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
-            enviarDatosServidorBBDD();    
-        }     
+        //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres
+        if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario)){
+            //Mostrar un alert de error
+            muestraMensajeAlertaLongitudCampo();
+            //El foco lo pone en el campo usuario
+            txtFieldUsuario.requestFocus();
+            //Selecciona el texto para borrar.
+            txtFieldUsuario.selectAll();
+            //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres
+        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+            muestraMensajeAlertaLongitudCampo();
+            pswFieldContrasena.requestFocus();
+            pswFieldContrasena.selectAll();
+            //Hay espacios en blanco en el campo usuario
+        }else if(!comprobarEspaciosBlancos(txtFieldUsuario)){
+            muestraMensajeAlertaEspacios();
+            txtFieldUsuario.requestFocus();
+            txtFieldUsuario.selectAll();
+            //Hay espacios en blanco en la contraseña
+        }else if(! comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+            muestraMensajeAlertaEspacios();
+            pswFieldContrasena.requestFocus();
+            pswFieldContrasena.selectAll();
+        }else
+            //Todos los campos cumplen la condición validar datos en la base de datos
+            enviarDatosServidorBBDD();       
     }
-    
+    /**
+     * Evento del Hyperlink clickado. Redirige a la escena SignUp.
+     * @param event 
+     */
     public void hyperlinkClickado(ActionEvent event){
         LOGGER.log(Level.INFO,"Evento del Hyperlink clickado. ");
         try{
            abrirVentanaSignUp(); 
         }catch(Exception e){
-            e.getMessage();
+            lblErrorExcepcion.setText("Intentalo mas tarde. Fallo la conexión");
         }
         
     }
@@ -260,29 +288,28 @@ public class FXMLDocumentControllerSignIn {
             //Pasa el usuario a la instancia signable a su método sign in.
             signable.signIn(myUser);
             //Llamada método para redireccionar aplicación a la siguiente ventana.
-            abrirVentanaLogOut();
-               
+            abrirVentanaLogOut();              
         } catch (ExcepcionUserNoExiste ex1) {
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex1.getMessage());
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentControllerSignIn.class.getName()).log(Level.SEVERE, null, ex1);
+            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex1);
         } catch (ExcepcionPasswdIncorrecta ex2) {
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex2.getMessage());
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentControllerSignIn.class.getName()).log(Level.SEVERE, null, ex2);
+            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex2);
         } catch (Exception ex3){
             //Colocar el texto de la excepción en el label
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentControllerSignIn.class.getName()).log(Level.SEVERE, null, ex3);
+            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex3);
         }
     }
 
@@ -353,17 +380,20 @@ public class FXMLDocumentControllerSignIn {
         try{
             //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
             FXMLLoader loader = new FXMLLoader(getClass().
-                getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentSignUp.fxml"));
+                getResource("/vista/FXMLDocumentSignUp.fxml"));
             //Parent es una clase gráfica de nodos xml son nodos.
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
-            FXMLDocumentLogOutController controladorLogOut = (FXMLDocumentLogOutController)loader.getController();
+            FXMLDocumentSignUpController controladorSignUp = (FXMLDocumentSignUpController)loader.getController();
             //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
-            controladorLogOut.setStage(stage);
+            Scene scene = new Scene(root);
+            //Añadir escena a la ventana
+            stage.setScene(scene);
+            //controladorSignUp.setStage(stage);
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
-            controladorLogOut.setSignable(signable);
+            controladorSignUp.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
-            controladorLogOut.initStage(root);
+            controladorSignUp.initStage(root);
         }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }
