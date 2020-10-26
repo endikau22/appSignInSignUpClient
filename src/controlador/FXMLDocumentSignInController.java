@@ -367,7 +367,8 @@ public class FXMLDocumentSignInController {
             controladorLogOut.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorLogOut.initStage(root);
-            }catch(IOException e){
+        //Error al carcar la nueva escenamostrar mensaje.
+        }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }
     }
@@ -394,6 +395,7 @@ public class FXMLDocumentSignInController {
             controladorSignUp.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorSignUp.initStage(root);
+        //Error al carcar la nueva escenamostrar mensaje.
         }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }

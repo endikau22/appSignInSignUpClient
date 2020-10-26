@@ -14,7 +14,7 @@
 <BorderPane fx:id="borderPaneIniciarSesion" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="617.0" 
             xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="controlador.FXMLDocumentControllerSignIn">
+            fx:controller="controlador.FXMLDocumentSignInController">
    <top>
       <Label fx:id="lblTituloIniciarSesion" text="INICIAR SESIÓN" BorderPane.alignment="CENTER">
          <font>
