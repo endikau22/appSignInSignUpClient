@@ -1,15 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Contiene el controlador de la aplicación cliente.
  */
 package controlador;
 
 import interfaz.Signable;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -110,6 +110,8 @@ public class FXMLDocumentLogOutController{
             //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
             signable.logOut(usuario);
             //Abrir ventana signin
+            abrirVentanaSignIn();
+        //El método logout lanza una excepción. Tratarla a continuación
         } catch (Exception ex) {
             LOGGER.log(Level.INFO,"Execepción SQL al intentar LogOut");
             Alert alert = new Alert(Alert.AlertType.ERROR,"Error al cerrar sesión, espera unos segundos."
@@ -117,6 +119,35 @@ public class FXMLDocumentLogOutController{
             alert.showAndWait();
         }
         
+    }
+    /**
+     * Carga la ventana signin para que el usuario se loguee si el registro ha sido correcto o se clicka el Hyperlink.
+     */
+    private void abrirVentanaSignIn() {
+        LOGGER.log(Level.INFO,"Abriendo ventana SignIn. ");
+        try{
+            //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
+            FXMLLoader loader = new FXMLLoader(getClass().
+                getResource("/vista/FXMLDocumentSignIn.fxml"));
+            //Parent es una clase gráfica de nodos xml son nodos.
+            Parent root = (Parent)loader.load();
+            //Relacionamos el documento FXML con el controlador que le va a controlar.
+            FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
+            //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
+            Scene scene = new Scene(root);
+            //Añadir escena a la ventana
+            stage.setScene(scene);
+            //controladorSignUp.setStage(stage);
+            //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
+            controladorSignIn.setSignable(signable);
+            //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
+            controladorSignIn.initStage(root);
+        //Error al cargar la nueva escenamostrar mensaje.
+        }catch(IOException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Error al cerrar sesión, espera unos segundos."
+                    ,ButtonType.OK);
+            alert.showAndWait();
+        }
     }
     
 }

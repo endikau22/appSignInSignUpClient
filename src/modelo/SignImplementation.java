@@ -52,9 +52,8 @@ public class SignImplementation implements Signable {
     private void setSocket() throws IOException{
         //Inicializa el socket con la dirección y el número de puerto establecidos..
         unSocket = new Socket(DIRECCION_IP,NUMERO_PUERTO);
-
     }
-
+    
     /**
      * Comunica con la aplicación servidor para autenticar al usuario.
      * @param user Un usuario de la aplicación
@@ -71,21 +70,22 @@ public class SignImplementation implements Signable {
         this.enviarInformacion(mensaje);
         //Guardar en el atributo mensaje el mensaje recibido con la llamada al método de la clase recibir información.
         mensaje = this.recibirInformacion(); 
-        //El método retorna el usuario. No se si es así meter en try catch
-        try{
-            return user;  
-        }catch(Exception e){
-            //Mirar las distintas opciones de mensaje recibidas.
-            switch (mensaje.getAccion()) {
-                //Si la acción del mensaje es usuario no existe lanzar excepción 
-                case USUARIO_NO_EXISTE:
-                    throw new ExcepcionUserNoExiste();
-                case PASSWORD_INCORRECTA:
-                    throw new ExcepcionPasswdIncorrecta();
-                default:
-                    throw new Exception(); 
-            } 
-        }
+        //Mirar las distintas opciones de mensaje recibidas.
+        switch (mensaje.getAccion()) {
+        //Leer los mensajes si es ok todo está bien sino lanzar excepciones.
+            case OK:
+                //Devolver usuario para logout posterior.
+                return user;
+            case USUARIO_NO_EXISTE:
+                //Lanzar excepcion de usuario no existe
+                throw new ExcepcionUserNoExiste();
+            case PASSWORD_INCORRECTA:
+                //lanzar excepción de contraseña incorrecta.
+                throw new ExcepcionPasswdIncorrecta();
+            default:
+                //Si no es ninguno de los anteriores lanzar la excepción general.
+                throw new Exception(); 
+        } 
     }
 
     /**
@@ -105,7 +105,9 @@ public class SignImplementation implements Signable {
         mensaje = this.recibirInformacion();
         //Mirar las distintas opciones de mensaje recibidas.
         switch (mensaje.getAccion()) {
-            //Si la acción del mensaje es usuario no existe lanzar excepción 
+            case OK:
+                //Todo bien cerrar el método sin errores.
+                break;
             case USUARIO_YA_EXISTE:
                 throw new ExcepcionUserYaExiste();
             //Por defecto se lanza excepcion general
@@ -127,9 +129,7 @@ public class SignImplementation implements Signable {
         mensaje = new Mensaje(user,Accion.LOGOUT);
         //Llamada al método de la clase enviar información
         this.enviarInformacion(mensaje);
-    }
-    
-    
+    }   
     /**
      * Envía el mensaje a la aplicación del servidor.
      * @param mensaje Un mensaje. Contiene un Usuario y una acción a realizar sobre la BBDD.

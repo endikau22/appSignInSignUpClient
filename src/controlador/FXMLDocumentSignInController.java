@@ -1,5 +1,5 @@
 /**
- * Contiene el modelo de datos de la aplicación cliente.
+ * Contiene el controlador de la aplicación cliente.
  */
 package controlador;
 
@@ -166,7 +166,7 @@ public class FXMLDocumentSignInController {
     private void manejarInicioVentana(WindowEvent event){
         LOGGER.info("Iniciando ControllerSignIn::handleWindowShowing");
         //El boton está inhabilitado al arrancar la ventana.
-        btnEntrar.setDisable(true);  
+        btnEntrar.setDisable(true); 
     }
     
     /**
@@ -191,6 +191,8 @@ public class FXMLDocumentSignInController {
             btnEntrar.setDisable(false);
             //Añadir tooltip al botón.
             btnEntrar.setTooltip(new Tooltip("Pulsa para acceder"));
+            //Habilitar el uso del teclado para moverse por la ventana.
+            btnEntrar.setMnemonicParsing(true);
         }
     }
     /**
@@ -297,6 +299,7 @@ public class FXMLDocumentSignInController {
      */
     private void enviarDatosServidorBBDD() {
         LOGGER.info("Iniciando ControllerSignIn.EnviarDatosServidorBBDD");
+        //Almacenar en objeto de User los datos recogidos de los campos de la ventana.
         User myUser = new User (txtFieldUsuario.getText(),pswFieldContrasena.getText());
         try {
             //Pasa el usuario a la instancia signable a su método sign in.
