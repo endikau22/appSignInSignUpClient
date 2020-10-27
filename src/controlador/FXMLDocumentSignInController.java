@@ -154,9 +154,9 @@ public class FXMLDocumentSignInController {
     public void inicializarComponentesVentana() {
         LOGGER.info("Iniciando ControllerSignIn::inicializarComponentesVentana");
         //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
-        pswFieldContrasena.setPromptText("Introduce tu contraseña. (4 a 20 caracters)");
+        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
         //Asignar texto cuando el campo está desenfocado.
-        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. (4 a 20 caracters)");
+        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
     }
     
     /**
@@ -202,25 +202,33 @@ public class FXMLDocumentSignInController {
         //Si cumplen las condiciones enviar datos.
         //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres
         if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario)){
-            //Mostrar un alert de error
-            muestraMensajeAlertaLongitudCampo();
+            LOGGER.info("Longitud del textfield erronea ControllerSignIn.accionBoton");
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña deben tener entre "+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres.");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
             txtFieldUsuario.selectAll();
             //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres
-        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
-            muestraMensajeAlertaLongitudCampo();
+        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)){
+            LOGGER.info("Longitud del passwordField erronea ControllerSignIn.accionBoton");
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña deben tener entre "+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres.");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
             //Hay espacios en blanco en el campo usuario
         }else if(!comprobarEspaciosBlancos(txtFieldUsuario)){
-            muestraMensajeAlertaEspacios();
+            LOGGER.info("Hay espacios en blanco en el texfield ControllerSignIn.accionBoton");
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");           
+            System.out.println(pswFieldContrasena.getText());
             txtFieldUsuario.requestFocus();
             txtFieldUsuario.selectAll();
             //Hay espacios en blanco en la contraseña
         }else if(! comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
-            muestraMensajeAlertaEspacios();
+            LOGGER.info("Hay espacios en blanco en el passwordfield ControllerSignIn.accionBoton");
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
         }else
@@ -229,23 +237,26 @@ public class FXMLDocumentSignInController {
     }
     /**
      * Evento del Hyperlink clickado. Redirige a la escena SignUp.
-     * @param event 
+     * @param event Un evento del Hyperlink.
      */
     public void hyperlinkClickado(ActionEvent event){
         LOGGER.log(Level.INFO,"Evento del Hyperlink clickado. ");
         try{
+            //Llamada a método abrirVentanaSignUp
            abrirVentanaSignUp(); 
         }catch(Exception e){
+            //Escribir en el label.
             lblErrorExcepcion.setText("Intentalo mas tarde. Fallo la conexión");
-        }
-        
+        }       
     }
     /**
      * Muestra un Alert Error, si el campo es superior en longitud al preestablecido en una Constante.
      */
     private void muestraMensajeAlertaLongitudCampo(){
+        //Crear un alert, mensaje de aviso.
             Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
                     + "deben tener una longitud entre "+MIN_LENGTH+" y "+MAX_LENGTH+".",ButtonType.OK);
+            //Mostraar en pantalla el mensaje alert.
             alert.showAndWait();
     }
     /**
@@ -257,10 +268,11 @@ public class FXMLDocumentSignInController {
         LOGGER.info("Iniciando ControllerSignIn.ComprobaEspaciosBlancos");
         //Guardamos valos textField en string sin espacios delante ni detras.
         String textoSinEspacios = field.getText().trim();
-        //VAriable de retorno.
+        //VAriable de retorno. Inicializar a false
         Boolean hayEspacios = false;
         //ForEach de character. Recorremos letra a letra
         for(Character t:textoSinEspacios.toCharArray()){
+            LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
             //Condición de igualdad. Propiedad equals de Character. Si el caracter actual igual a espacio.
             if(t.equals(' '))
                 hayEspacios = true;
@@ -272,10 +284,12 @@ public class FXMLDocumentSignInController {
      * Muestra un Alert Error, si el campo contiene espacios entre la información.
      */
     private void muestraMensajeAlertaEspacios() {
+        //Crear un alert, mensaje de aviso.
         LOGGER.info("Iniciando ControllerSignIn.muestraMensajeAlertaEspacios");
         Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
                     + " no deben tener espacios.",ButtonType.OK);
-            alert.showAndWait();
+        //Mostraar en pantalla el mensaje alert.
+        alert.showAndWait();
     }
 
     /**
@@ -287,7 +301,7 @@ public class FXMLDocumentSignInController {
         try {
             //Pasa el usuario a la instancia signable a su método sign in.
             signable.signIn(myUser);
-            //Llamada método para redireccionar aplicación a la siguiente ventana.
+            //Llamada al método para redireccionar aplicación a la siguiente ventana.
             abrirVentanaLogOut();              
         } catch (ExcepcionUserNoExiste ex1) {
             //Colocar el texto de la excepción en el label
@@ -356,7 +370,7 @@ public class FXMLDocumentSignInController {
         try{
             //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
             FXMLLoader loader = new FXMLLoader(getClass().
-                    getResource("../grupog5.signinsignupapplication.cliente.vista/FXMLDocumentLogOut.fxml"));
+                    getResource("/vista/FXMLDocumentLogOut.fxml"));
             //Parent es una clase gráfica de nodos xml son nodos.
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
@@ -400,5 +414,4 @@ public class FXMLDocumentSignInController {
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }
     }
-
 }

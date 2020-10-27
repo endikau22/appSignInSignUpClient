@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import mensaje.Accion;
@@ -145,6 +144,8 @@ public class SignImplementation implements Signable {
         ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
         //Escribe el mensaje en el tubo del socket.
         salidaMensaje.writeObject(mensaje);
+        //Cerrar el ObjectOutputStream
+        salidaMensaje.close();
 
     }
     /**
@@ -162,6 +163,8 @@ public class SignImplementation implements Signable {
         ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
         //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
         mensaje = (Mensaje) lecturaMensaje.readObject();
+        //Cerrar el ObjectInputStream
+        lecturaMensaje.close();
         //Retorna el mensaje
         return mensaje;
     }

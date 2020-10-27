@@ -6,7 +6,6 @@
 package controlador;
 
 import interfaz.Signable;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -40,7 +39,7 @@ public class FXMLDocumentLogOutController{
      */
     private Signable signable;
     /**
-     * Un usuario que ha accedidio a la aplicación.
+     * Un usuario que ha accedido a la aplicación.
      */
     private User usuario;
     /**
@@ -82,7 +81,7 @@ public class FXMLDocumentLogOutController{
 
     /**
      * Inicializa una Stage.
-     * @param root Un nodo 
+     * @param root Un nodo FXML
      */
     public void initStage(Parent root) {
         LOGGER.log(Level.INFO,"Inicializando la ventana logOut. ");
@@ -91,13 +90,12 @@ public class FXMLDocumentLogOutController{
         //Añadir escena a la ventana
         stage.setScene(scene);
         //Asignación de un título a la ventana
-        stage.setTitle("Sign In");
+        stage.setTitle("Bienvenido a la aplicación");
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
   
         //Ejecutar método evento acción clickar botón
         btnSalir.setOnAction(this::accionBoton);
-        //inicializarComponentesVentana();
         //Hace visible la pantalla
         stage.show();
     }
@@ -114,7 +112,7 @@ public class FXMLDocumentLogOutController{
             //Abrir ventana signin
         } catch (Exception ex) {
             LOGGER.log(Level.INFO,"Execepción SQL al intentar LogOut");
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Error al salir, espera unos segundos."
+            Alert alert = new Alert(Alert.AlertType.ERROR,"Error al cerrar sesión, espera unos segundos."
                     ,ButtonType.OK);
             alert.showAndWait();
         }
