@@ -15,9 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -43,17 +41,17 @@ public class FXMLDocumentSignInController {
      */
     private Stage stage;
     /**
-     * Un signImplementation
+     * Un objeto de la clase SignImplementation que implementa la interfaz Signable
      */
     private Signable signable;
     /**
      * Longitud máxima de los campos de texto permitida.
      */
-    private static final int MAX_LENGTH = 20;
+    private static final int TEXTFIELD_MAX_LENGTH = 20;
     /**
      * Longitud minima de los campos de texto permitida.
      */
-    private static final int MIN_LENGTH = 4;
+    private static final int TEXTFIELD_MIN_LENGTH = 4;
     
     /**
      * Campo de texto Usuario
@@ -131,8 +129,16 @@ public class FXMLDocumentSignInController {
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
         
+        
+        //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
+        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //Asignar texto cuando el campo está desenfocado.
+        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //El boton está inhabilitado al arrancar la ventana.
+        btnEntrar.setDisable(true);
+        
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
-        //Este evento se lanza cuando la ventana esta a punto de aparecer.
+        //Este evento se lanza cuando la ventana esta a punto de aparecer. Este evento no se lanza al volver de otra ventana porque no abrimos una stage cambiamos de scene
         stage.setOnShowing(this::manejarInicioVentana);
         //Ejecutar método cambioTexto cuando el texto de el campo txtFieldUsuario cambie.
         txtFieldUsuario.textProperty().addListener(this::cambioTexto);
@@ -142,29 +148,20 @@ public class FXMLDocumentSignInController {
         btnEntrar.setOnAction(this::accionBoton);
         //Ejecutar método Hyperlink clickado
         hplRegistrate.setOnAction(this::hyperlinkClickado);
-        //Llamada al método inicializarComponenentesVentana del controlador de la ventana signIn.
-        inicializarComponentesVentana();
         //Hace visible la pantalla
         stage.show();
     }
-    
-    /**
-     * Inicializa los componentes de la ventana.
-     */
-    public void inicializarComponentesVentana() {
-        LOGGER.info("Iniciando ControllerSignIn::inicializarComponentesVentana");
-        //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
-        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
-        //Asignar texto cuando el campo está desenfocado.
-        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
-    }
-    
+
     /**
      * Acciones que se realizan en el momento previo a que se muestra la ventana.
      * @param event Evento de ventana.
      */
     private void manejarInicioVentana(WindowEvent event){
         LOGGER.info("Iniciando ControllerSignIn::handleWindowShowing");
+            //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
+        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //Asignar texto cuando el campo está desenfocado.
+        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //El boton está inhabilitado al arrancar la ventana.
         btnEntrar.setDisable(true); 
     }
@@ -202,35 +199,20 @@ public class FXMLDocumentSignInController {
     private void accionBoton(ActionEvent event){
         LOGGER.info("Iniciando ControllerSignIn.accionBoton");
         //Si cumplen las condiciones enviar datos.
-        //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres
-        if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario)){
-            LOGGER.info("Longitud del textfield erronea ControllerSignIn.accionBoton");
+        //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
+        if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario) ||comprobarEspaciosBlancos(txtFieldUsuario)){
+            LOGGER.info("Longitud del textfield erronea y espacios blancos ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
             lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
             txtFieldUsuario.selectAll();
-            //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres
-        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)){
-            LOGGER.info("Longitud del passwordField erronea ControllerSignIn.accionBoton");
+            //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
+        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)||comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+            LOGGER.info("Longitud del passwordField erronea y espacios blancos ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
             lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
-            pswFieldContrasena.requestFocus();
-            pswFieldContrasena.selectAll();
-            //Hay espacios en blanco en el campo usuario
-        }else if(comprobarEspaciosBlancos(txtFieldUsuario)){
-            LOGGER.info("Hay espacios en blanco en el texfield ControllerSignIn.accionBoton");
-            //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");           
-            System.out.println(pswFieldContrasena.getText());
-            txtFieldUsuario.requestFocus();
-            txtFieldUsuario.selectAll();
-            //Hay espacios en blanco en la contraseña
-        }else if(comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
-            LOGGER.info("Hay espacios en blanco en el passwordfield ControllerSignIn.accionBoton");
-            //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
         }else
@@ -284,7 +266,7 @@ public class FXMLDocumentSignInController {
             //Pasa el usuario a la instancia signable a su método sign in.
             signable.signIn(myUser);
             //Llamada al método para redireccionar aplicación a la siguiente ventana.
-            abrirVentanaLogOut();              
+            abrirVentanaLogOut(myUser);              
         } catch (ExcepcionUserNoExiste ex1) {
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex1.getMessage());
@@ -319,7 +301,7 @@ public class FXMLDocumentSignInController {
         //booleano iniciado a true. Por defecto cumple la condición
         Boolean numeroCaracteresCorrectos = true;
         //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
-        if(field.getText().trim().length()>MAX_LENGTH){
+        if(field.getText().trim().length()>TEXTFIELD_MAX_LENGTH){
             //booleana a false
                 numeroCaracteresCorrectos = false;
         }
@@ -335,7 +317,7 @@ public class FXMLDocumentSignInController {
         LOGGER.info("Iniciando ControllerSignIn.minimoCaracteres");
         //booleano iniciado a true.
         Boolean numeroCaracteresCorrectos = true;
-        if(field.getText().trim().length()< MIN_LENGTH){
+        if(field.getText().trim().length()< TEXTFIELD_MIN_LENGTH){
                 numeroCaracteresCorrectos = false;
         }
         return numeroCaracteresCorrectos;
@@ -344,7 +326,7 @@ public class FXMLDocumentSignInController {
     /**
      * Cargar siguiente ventana.
      */
-    private void abrirVentanaLogOut() throws Exception{
+    private void abrirVentanaLogOut(User usuario) throws Exception{
         LOGGER.log(Level.INFO,"Abriendo ventana LogOut. ");
         try{
             //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
@@ -354,6 +336,8 @@ public class FXMLDocumentSignInController {
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
             FXMLDocumentLogOutController controladorLogOut = (FXMLDocumentLogOutController)loader.getController();
+            //Pasar el usuario al controlador de la ventana logOut.
+            controladorLogOut.setUsuario(usuario);
             //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
             controladorLogOut.setStage(stage);
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
@@ -381,8 +365,9 @@ public class FXMLDocumentSignInController {
             FXMLDocumentSignUpController controladorSignUp = (FXMLDocumentSignUpController)loader.getController();   
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
             controladorSignUp.setSignable(signable);
-            //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
+            //Pasa la ventana al controlador de la ventana signUp
             controladorSignUp.setStage(stage);
+            //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorSignUp.initStage(root);
         //Error al cargar la nueva escenamostrar mensaje.
         }catch(IOException e){

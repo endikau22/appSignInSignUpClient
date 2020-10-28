@@ -3,8 +3,6 @@
  */
 package controlador;
 
-import excepciones.ExcepcionPasswdIncorrecta;
-import excepciones.ExcepcionUserNoExiste;
 import excepciones.ExcepcionUserYaExiste;
 import interfaz.Signable;
 import java.io.IOException;
@@ -48,11 +46,11 @@ public class FXMLDocumentSignUpController{
     /**
      * Longitud máxima de los campos de texto permitida.
      */
-    private static final int MAX_LENGTH = 20;
+    private static final int TEXTFIELD_MAX_LENGTH = 20;
     /**
      * Longitud minima de los campos de texto permitida.
      */
-    private static final int MIN_LENGTH = 4;
+    private static final int TEXTFIELD_MIN_LENGTH = 4;
     /**
      * Botón de confirmación de crear cuenta.
      */
@@ -130,11 +128,12 @@ public class FXMLDocumentSignUpController{
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
         
+        //Iniciar los componentes de la escena. TextFields y botones.
+        iniciarComponentesEscena();
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
         //Este evento se lanza cuando la ventana está a punto de aparecer.
         stage.setOnShowing(this::manejarInicioVentana);
-        //Añadir un evento para el cambio de texto en cada uno de los campos de texto.
-        
+        //Añadir un evento para el cambio de texto en cada uno de los campos de texto.     
         txtFieldUsuario.textProperty().addListener(this::cambioTexto);
         txtFieldEmail.textProperty().addListener(this::cambioTexto);
         txtFieldNombre.textProperty().addListener(this::cambioTexto);
@@ -145,10 +144,24 @@ public class FXMLDocumentSignUpController{
         btnCrearCuenta.setOnAction(this::accionBoton);
         //Ejecutar método Hyperlink clickado
         hplIniciaSesion.setOnAction(this::hyperlinkClickado);
-        //Llamada al método inicializarComponenentesVentana del controlador de la ventana signIn.
-        inicializarComponentesVentana();
         //Hace visible la pantalla
         stage.show();
+    }
+    
+    public void iniciarComponentesEscena(){
+        LOGGER.log(Level.INFO,"Iniciar componentes de la escena. ");
+        //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
+        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //Asignar un texto de fondo en el campo repetir contraseña, se muestra cuando el campo está desenfocado.
+        pswFieldRepetirContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //Asignar texto cuando el campo está desenfocado.
+        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
+        //Asignar texto en el textField Nombre cuando el campo está desenfocado.
+        txtFieldNombre.setPromptText("Introduce tu nombre.");
+        //Asignar texto en el textField email cuando el campo está desenfocado.
+        txtFieldEmail.setPromptText(" @ Introduce tu email."); 
+        //El boton está inhabilitado al arrancar la ventana.
+        btnCrearCuenta.setDisable(true);  
     }
     
     /**
@@ -166,32 +179,25 @@ public class FXMLDocumentSignUpController{
         }   
     }
      /**
-     * Acciones que se realizan en el momento previo a que se muestra la ventana.
+     * Acciones que se realizan en el momento previo a que se muestra la ventana. Inicializa los componentes.
      * @param event Evento de ventana.
      */
     private void manejarInicioVentana(WindowEvent event){
-        LOGGER.info("Iniciando ControllerSignUp::handleWindowShowing");
-        //El boton está inhabilitado al arrancar la ventana.
-        btnCrearCuenta.setDisable(true);  
-    }
-    
-    /**
-     * Inicializa los componentes de la ventana.
-     */
-    public void inicializarComponentesVentana() {
-        LOGGER.info("Iniciando ControllerSignIn::inicializarComponentesVentana");
+        LOGGER.info("Iniciando ControllerSignUp::handleWindowShowing manejarInicioVentana");
         //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
-        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
+        pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //Asignar un texto de fondo en el campo repetir contraseña, se muestra cuando el campo está desenfocado.
-        pswFieldRepetirContrasena.setPromptText("Introduce tu contraseña. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
+        pswFieldRepetirContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //Asignar texto cuando el campo está desenfocado.
-        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres)");
+        txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //Asignar texto en el textField Nombre cuando el campo está desenfocado.
         txtFieldNombre.setPromptText("Introduce tu nombre.");
         //Asignar texto en el textField email cuando el campo está desenfocado.
         txtFieldEmail.setPromptText(" @ Introduce tu email."); 
-        
+        //El boton está inhabilitado al arrancar la ventana.
+        btnCrearCuenta.setDisable(true);  
     }
+
     /**
      * Registra los cambios de texto en los textField o passwordField.
      * @param observable 
@@ -214,7 +220,7 @@ public class FXMLDocumentSignUpController{
             //Habilitar botón 
             btnCrearCuenta.setDisable(false);
             //Añadir tooltip al botón. (Muestra el mensaje al tener el ratón encima del botón)
-            btnCrearCuenta.setTooltip(new Tooltip("Pulsa para acceder"));
+            btnCrearCuenta.setTooltip(new Tooltip("Pulsa para registrarte"));
             //Habilitar el uso del teclado para moverse por la ventana.
             btnCrearCuenta.setMnemonicParsing(true);
         }
@@ -224,7 +230,7 @@ public class FXMLDocumentSignUpController{
      * Carga la ventana signIn para que el usuario se loguee si el registro ha sido correcto o se clicka el Hyperlink.
      */
     private void abrirVentanaSignIn() {
-        LOGGER.log(Level.INFO,"Abriendo ventana SignIn. ");
+        LOGGER.log(Level.INFO,"Metodo del controladorSignUp, Abriendo ventana SignIn.");
         try{
             //New FXMLLoader Añadir el fxml de logout que es la ventana a la que se redirige si todo va bien
             FXMLLoader loader = new FXMLLoader(getClass().
@@ -235,6 +241,7 @@ public class FXMLDocumentSignUpController{
             FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
             controladorSignIn.setStage(stage);
+            //Pasar el objeto signable al controlador SignIn.
             controladorSignIn.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorSignIn.initStage(root);
@@ -249,7 +256,7 @@ public class FXMLDocumentSignUpController{
      * @param event Un evento del botón
      */
     private void accionBoton(ActionEvent e){
-        LOGGER.info("Iniciando ControllerSignIn.accionBoton");
+        LOGGER.info("Iniciando ControllerSignUp.accionBoton");
         //Si cumplen las condiciones los cuatro campos de texto..
         if(validarCampoUsuario()&&validarCampoEmail()&&validarCampoLogin()&&validarContraseñas())
         //Todos los campos cumplen la condición validar datos en la base de datos
@@ -306,7 +313,8 @@ public class FXMLDocumentSignUpController{
      * @return 
      */
     private boolean validarCampoUsuario() {
-        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)&&comprobarEspaciosBlancos(txtFieldNombre);
+        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)
+                &&comprobarEspaciosBlancos(txtFieldNombre);
     }
 
     /**
@@ -323,7 +331,8 @@ public class FXMLDocumentSignUpController{
      * @return 
      */
     private boolean validarCampoLogin() {
-        return true;
+        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)
+                &&comprobarEspaciosBlancos(txtFieldNombre);
     }
     
     /**
@@ -336,7 +345,7 @@ public class FXMLDocumentSignUpController{
         //booleano iniciado a true. Por defecto cumple la condición
         Boolean numeroCaracteresCorrectos = true;
         //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
-        if(field.getText().trim().length()>MAX_LENGTH){
+        if(field.getText().trim().length() > TEXTFIELD_MAX_LENGTH){
             //booleana a false
                 numeroCaracteresCorrectos = false;
         }
@@ -349,10 +358,10 @@ public class FXMLDocumentSignUpController{
      * @return Un boolean true si contiene los caracteres deseados, false si los caracteres son menos que el preestablecido.
      */
     private Boolean minimoCaracteres(TextField field) {
-        LOGGER.info("Iniciando ControllerSignIn.minimoCaracteres");
+        LOGGER.info("Iniciando ControllerSignUp.minimoCaracteres");
         //booleano iniciado a true.
         Boolean numeroCaracteresCorrectos = true;
-        if(field.getText().trim().length()< MIN_LENGTH){
+        if(field.getText().trim().length() < TEXTFIELD_MIN_LENGTH){
                 numeroCaracteresCorrectos = false;
         }
         return numeroCaracteresCorrectos;
@@ -364,7 +373,7 @@ public class FXMLDocumentSignUpController{
      * @return Un boolean true si hay espacios en blanco en el texto, false si por el contrario no los hay.
      */
     private Boolean comprobarEspaciosBlancos(TextField field) {
-        LOGGER.info("Iniciando ControllerSignIn.ComprobaEspaciosBlancos");
+        LOGGER.info("Iniciando ControllerSignUp.ComprobaEspaciosBlancos");
         //Guardamos valos textField en string sin espacios delante ni detras.
         String textoSinEspacios = field.getText().trim();
         //VAriable de retorno. Inicializar a false
@@ -380,18 +389,16 @@ public class FXMLDocumentSignUpController{
     }
 
     /**
-     * Validación del campo contraseña y repetir contraseña
+     * Validación del campo contraseña y repetir contraseña. Deben ser iguales ambos campos y máximo 30 caracteres.
      * @return Un booleano. True si la contraseña es correcta.
      */
     private boolean validarContraseñas() {
-      //Comparar los dos campos contraseña. Si son iguales estudiar el contenido
-      if(pswFieldContrasena.getText().equals(pswFieldRepetirContrasena.getText()) 
-              &&pswFieldContrasena.getText().trim().length()<30) 
-        //La validación se hace en el método emaiCorrento
-        return emailCorrecto(pswFieldContrasena.getText());
-      else//Los campos contraseña y repetirContraseña son distintos; retornar false.
-          return false;
+      //Comparar los dos campos contraseña. Si son iguales y además tiene una longitud superior a 4 e inferior a 20.
+      return pswFieldContrasena.getText().equals(pswFieldRepetirContrasena.getText()) 
+              && maximoCaracteres((TextField)pswFieldContrasena)&& minimoCaracteres((TextField)pswFieldContrasena)
+              && comprobarEspaciosBlancos((TextField)pswFieldContrasena);
     }
+    
     /**
      * Comprueba que el String recibido como parámetro cumple las condiciones de un email.
      * @param email El email del campo contraseña.
@@ -411,14 +418,14 @@ public class FXMLDocumentSignUpController{
             if(emailArray.length!=2) {
                 //El email no es correcto
                 ok=false;
-                System.out.println("Has metido "+(emailArray.length -1)+" @s");
+                //System.out.println("Has metido "+(emailArray.length -1)+" @s");
             }
             else {//Vamos bien hay un arroba. Estudiar el nombre. Posición 0 del array.
                 String nomUsuario = emailArray[0];
                 nombre = nomUsuario.toCharArray();
                 //Confirmar que los caracteres son mínimo 3
                 if(nomUsuario.length()<3) {//Error no cumple el mínimo de carcteres en el nombre.
-                    System.out.println("Nombre usuario tiene que tener minimo 3.");
+                    //System.out.println("Nombre usuario tiene que tener minimo 3.");
                     ok = false;
                 }		
                 else {//Vamos bien. Cumple la longitud de caracteres del nombre.
@@ -427,7 +434,7 @@ public class FXMLDocumentSignUpController{
                         //Si no se cumple error.
                         if((Character.isLetterOrDigit(nombre[i])||Character.compare(nombre[i],'.')==0||Character.compare(nombre[i], '_')==0)==false) {
                             ok=false;
-                            System.out.println("\"Caracter incorrecto en el nombre de usuario solo letras numeros, . o _\"");
+                            //System.out.println("\"Caracter incorrecto en el nombre de usuario solo letras numeros, . o _\"");
                             break;
                         }
                     }//Si va bien por ahra mira el dominio.
@@ -435,15 +442,20 @@ public class FXMLDocumentSignUpController{
                         String dominio [] = emailArray[1].split("\\.");//o('.');
                         if(dominio.length!=2) {//Si no hay solo un punto. 
                             ok=false;
-                            System.out.println("Hay que separar el nombre del dominio y la extension con solo un punto");
+                            //System.out.println("Hay que separar el nombre del dominio y la extension con solo un punto");
                         }
-                        else {//Esto mal dividir antes porque dominio tiene que tener como mucho tres letras
+                        else {
                             for(int j=0;j<2;j++) {
                                 nombre =  dominio[j].toCharArray();
+                                if(j==1){//La extensión del dominio 2 o 3 letras.
+                                    if(nombre.length>3 || nombre.length<2){
+                                        ok= false;
+                                    }
+                                }
                                 for(int letra=0;letra<nombre.length;letra++) {
                                     if(Character.isAlphabetic(nombre[letra])==false) {
                                         ok=false;
-                                        System.out.println("En el dominio solo letras nada mas");
+                                        //System.out.println("En el dominio solo letras nada mas");
                                         break;
                                     }	
                                 }

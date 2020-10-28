@@ -1,5 +1,5 @@
 /**
- * Contiene el modelo de la aplicación.
+ * Contiene el modelo de la aplicación cliente.
  */
 package modelo;
 
@@ -66,10 +66,22 @@ public class SignImplementation implements Signable {
         LOGGER.info("Metodo SignIn de la clase SignImplementation.");
         //Almacenar en el atributo mensaje un nuevo meensaje. Este será enviado al servidor.
         mensaje = new Mensaje(user,Accion.SIGNIN);
-        //Llamada al método de la clase enviar información
-        this.enviarInformacion(mensaje);
-        //Guardar en el atributo mensaje el mensaje recibido con la llamada al método de la clase recibir información.
-        mensaje = this.recibirInformacion(); 
+        //Inicializa el socket con los valores necesarios.
+        this.setSocket();
+        //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
+        ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
+        //Escribe el mensaje en el tubo del socket.
+        salidaMensaje.writeObject(mensaje);
+        //Crear un objeto de la clase ObjectInputStream para recibir y leer datos.
+        ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
+        //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
+        mensaje = (Mensaje) lecturaMensaje.readObject();   
+        //Cerrar el ObjectOutputStream
+        salidaMensaje.close();
+        //Cerrar el ObjectInputStream
+        lecturaMensaje.close();
+        //Cerrar el socket 
+        unSocket.close();
         //Mirar las distintas opciones de mensaje recibidas.
         switch (mensaje.getAccion()) {
         //Leer los mensajes si es ok todo está bien sino lanzar excepciones.
@@ -99,10 +111,22 @@ public class SignImplementation implements Signable {
         LOGGER.info("Metodo SignUp de la clase SignImplementation.");
         //Almacenar en el atributo mensaje un nuevo meensaje. Este será enviado al servidor.
         mensaje = new Mensaje(user,Accion.SIGNUP);
-        //Llamada al método de la clase enviar información
-        this.enviarInformacion(mensaje);
-        //Guardar en el atributo mensaje el mensaje recibido con la llamada al método de la clase recibir información.
-        mensaje = this.recibirInformacion();
+        //Inicializa el socket con los valores necesarios.
+        this.setSocket();
+        //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
+        ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
+        //Escribe el mensaje en el tubo del socket.
+        salidaMensaje.writeObject(mensaje);
+        //Crear un objeto de la clase ObjectInputStream para recibir y leer datos.
+        ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
+        //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
+        mensaje = (Mensaje) lecturaMensaje.readObject();   
+        //Cerrar el ObjectOutputStream
+        salidaMensaje.close();
+        //Cerrar el ObjectInputStream
+        lecturaMensaje.close();
+        //Cerrar el socket 
+        unSocket.close();
         //Mirar las distintas opciones de mensaje recibidas.
         switch (mensaje.getAccion()) {
             case OK:
@@ -127,17 +151,6 @@ public class SignImplementation implements Signable {
         LOGGER.info("Metodo LogOut de la clase SignImplementation.");
         //Guardar en el atributo mensaje el mensaje recibido con la llamada al método de la clase recibir información.
         mensaje = new Mensaje(user,Accion.LOGOUT);
-        //Llamada al método de la clase enviar información
-        this.enviarInformacion(mensaje);
-    }   
-    /**
-     * Envía el mensaje a la aplicación del servidor.
-     * @param mensaje Un mensaje. Contiene un Usuario y una acción a realizar sobre la BBDD.
-     * @throws java.io.IOException 
-     */
-    public void enviarInformacion(Mensaje mensaje) throws IOException{
-        //Mensaje informativo del logger de ejecución del método
-        LOGGER.info("Metodo enviarInformacion de la clase SignImplementation.");
         //Inicializa el socket con los valores necesarios.
         this.setSocket();
         //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
@@ -146,26 +159,6 @@ public class SignImplementation implements Signable {
         salidaMensaje.writeObject(mensaje);
         //Cerrar el ObjectOutputStream
         salidaMensaje.close();
-
-    }
-    /**
-     * Recibe la información del servidor de la aplicación.
-     * @return Un mensaje.
-     * @throws IOException
-     * @throws ClassNotFoundException 
-     */
-    public Mensaje recibirInformacion()throws IOException, ClassNotFoundException{
-        //Mensaje informativo del logger de ejecución del método
-        LOGGER.info("Metodo enviarInformacion de la clase SignImplementation.");
-        //Inicializa el socket con los valores necesarios.
-        this.setSocket();
-        //Crear un objeto de la clase ObjectOutputStream para recibir y leer datos.
-        ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
-        //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
-        mensaje = (Mensaje) lecturaMensaje.readObject();
-        //Cerrar el ObjectInputStream
-        lecturaMensaje.close();
-        //Retorna el mensaje
-        return mensaje;
-    }
+        unSocket.close();
+    }   
 }

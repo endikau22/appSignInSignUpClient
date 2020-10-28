@@ -78,6 +78,20 @@ public class FXMLDocumentLogOutController{
     public Stage getStage(){
         return stage;
     }
+    /**
+     * Retorna un usuario.
+     * @return Un usuario.
+     */
+    public User getUsuario() {
+        return usuario;
+    }
+    /**
+     * Asigna al atributo usuario un User recibido como parámetro.
+     * @param usuario Un usuario
+     */
+    public void setUsuario(User usuario) {
+        this.usuario = usuario;
+    }
 
     /**
      * Inicializa una Stage.
@@ -90,7 +104,7 @@ public class FXMLDocumentLogOutController{
         //Añadir escena a la ventana
         stage.setScene(scene);
         //Asignación de un título a la ventana
-        stage.setTitle("Bienvenido a la aplicación");
+        stage.setTitle("Bienvenido a la aplicación "+usuario.getFullName());
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
   
@@ -133,11 +147,8 @@ public class FXMLDocumentLogOutController{
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
             FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
-            //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
-            Scene scene = new Scene(root);
-            //Añadir escena a la ventana
-            stage.setScene(scene);
-            //controladorSignUp.setStage(stage);
+            //Pasar la ventana al controlador de la ventana signIn.
+            controladorSignIn.setStage(stage);
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
             controladorSignIn.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
