@@ -1,5 +1,5 @@
 /**
- * Contiene el controlador de la aplicación cliente.
+ * Contiene el controlador de la aplicación cliente del proyecto SignInSignUp.
  */
 package controlador;
 
@@ -206,7 +206,7 @@ public class FXMLDocumentSignInController {
         if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario)){
             LOGGER.info("Longitud del textfield erronea ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña deben tener entre "+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres.");
+            lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
@@ -215,11 +215,11 @@ public class FXMLDocumentSignInController {
         }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)){
             LOGGER.info("Longitud del passwordField erronea ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña deben tener entre "+MIN_LENGTH+ " a "+MAX_LENGTH+" caracteres.");
+            lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
             //Hay espacios en blanco en el campo usuario
-        }else if(!comprobarEspaciosBlancos(txtFieldUsuario)){
+        }else if(comprobarEspaciosBlancos(txtFieldUsuario)){
             LOGGER.info("Hay espacios en blanco en el texfield ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
             lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");           
@@ -227,7 +227,7 @@ public class FXMLDocumentSignInController {
             txtFieldUsuario.requestFocus();
             txtFieldUsuario.selectAll();
             //Hay espacios en blanco en la contraseña
-        }else if(! comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+        }else if(comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
             LOGGER.info("Hay espacios en blanco en el passwordfield ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
             lblErrorUsuarioContrasena.setText("Los campos Usuario y contraseña no deben tener espacios.");
@@ -251,22 +251,13 @@ public class FXMLDocumentSignInController {
             lblErrorExcepcion.setText("Intentalo mas tarde. Fallo la conexión");
         }       
     }
-    /**
-     * Muestra un Alert Error, si el campo es superior en longitud al preestablecido en una Constante.
-     */
-    private void muestraMensajeAlertaLongitudCampo(){
-        //Crear un alert, mensaje de aviso.
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
-                    + "deben tener una longitud entre "+MIN_LENGTH+" y "+MAX_LENGTH+".",ButtonType.OK);
-            //Mostraar en pantalla el mensaje alert.
-            alert.showAndWait();
-    }
+    
     /**
      * Comprueba que el texto de un campo no tenga espacios intermedios.
      * @param field Un campo de texto.
      * @return Un boolean true si hay espacios en blanco en el texto, false si por el contrario no los hay.
      */
-    private boolean comprobarEspaciosBlancos(TextField field) {
+    private Boolean comprobarEspaciosBlancos(TextField field) {
         LOGGER.info("Iniciando ControllerSignIn.ComprobaEspaciosBlancos");
         //Guardamos valos textField en string sin espacios delante ni detras.
         String textoSinEspacios = field.getText().trim();
@@ -281,19 +272,7 @@ public class FXMLDocumentSignInController {
         }
         return hayEspacios;
     }
-
-    /**
-     * Muestra un Alert Error, si el campo contiene espacios entre la información.
-     */
-    private void muestraMensajeAlertaEspacios() {
-        //Crear un alert, mensaje de aviso.
-        LOGGER.info("Iniciando ControllerSignIn.muestraMensajeAlertaEspacios");
-        Alert alert = new Alert(Alert.AlertType.ERROR,"Los campos Usuario y contraseña \n"
-                    + " no deben tener espacios.",ButtonType.OK);
-        //Mostraar en pantalla el mensaje alert.
-        alert.showAndWait();
-    }
-
+    
     /**
      * Enviar datos del usuario a la BBDD con el objeto signable
      */
@@ -337,14 +316,12 @@ public class FXMLDocumentSignInController {
      */
     private Boolean maximoCaracteres(TextField field) {
         LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
-        //booleano iniciado a true.
+        //booleano iniciado a true. Por defecto cumple la condición
         Boolean numeroCaracteresCorrectos = true;
         //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
         if(field.getText().trim().length()>MAX_LENGTH){
             //booleana a false
                 numeroCaracteresCorrectos = false;
-                //mostrar una alert
-                muestraMensajeAlertaLongitudCampo();
         }
         return numeroCaracteresCorrectos;
     }
@@ -356,11 +333,10 @@ public class FXMLDocumentSignInController {
      */
     private Boolean minimoCaracteres(TextField field) {
         LOGGER.info("Iniciando ControllerSignIn.minimoCaracteres");
-        
+        //booleano iniciado a true.
         Boolean numeroCaracteresCorrectos = true;
         if(field.getText().trim().length()< MIN_LENGTH){
                 numeroCaracteresCorrectos = false;
-                muestraMensajeAlertaLongitudCampo();
         }
         return numeroCaracteresCorrectos;
     }
@@ -402,17 +378,13 @@ public class FXMLDocumentSignInController {
             //Parent es una clase gráfica de nodos xml son nodos.
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
-            FXMLDocumentSignUpController controladorSignUp = (FXMLDocumentSignUpController)loader.getController();
-            //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
-            Scene scene = new Scene(root);
-            //Añadir escena a la ventana
-            stage.setScene(scene);
-            //controladorSignUp.setStage(stage);
+            FXMLDocumentSignUpController controladorSignUp = (FXMLDocumentSignUpController)loader.getController();   
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
             controladorSignUp.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
+            controladorSignUp.setStage(stage);
             controladorSignUp.initStage(root);
-        //Error al carcar la nueva escenamostrar mensaje.
+        //Error al cargar la nueva escenamostrar mensaje.
         }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }

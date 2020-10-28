@@ -1,5 +1,5 @@
 /**
- * Contiene el controlador de la aplicación cliente.
+ * Contiene el controlador de la aplicación cliente del proyecto SignInSignUp. 
  */
 package controlador;
 
@@ -131,9 +131,10 @@ public class FXMLDocumentSignUpController{
         stage.setResizable(false); 
         
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
-        //Este evento se lanza cuando la ventana esta a punto de aparecer.
+        //Este evento se lanza cuando la ventana está a punto de aparecer.
         stage.setOnShowing(this::manejarInicioVentana);
         //Añadir un evento para el cambio de texto en cada uno de los campos de texto.
+        
         txtFieldUsuario.textProperty().addListener(this::cambioTexto);
         txtFieldEmail.textProperty().addListener(this::cambioTexto);
         txtFieldNombre.textProperty().addListener(this::cambioTexto);
@@ -158,19 +159,18 @@ public class FXMLDocumentSignUpController{
         LOGGER.log(Level.INFO,"Evento del Hyperlink clickado de la clase controlador SignUp. ");
         try{
             //Llamada al método de esta clase.
-           abrirVentanaSignIn(); 
+            abrirVentanaSignIn(); 
         }catch(Exception e){
             //Si se produce un error mostrar un mensaje.
             lblMensajeError.setText("Intentalo mas tarde. Fallo la conexión");
-        }
-        
+        }   
     }
      /**
      * Acciones que se realizan en el momento previo a que se muestra la ventana.
      * @param event Evento de ventana.
      */
     private void manejarInicioVentana(WindowEvent event){
-        LOGGER.info("Iniciando ControllerSignIn::handleWindowShowing");
+        LOGGER.info("Iniciando ControllerSignUp::handleWindowShowing");
         //El boton está inhabilitado al arrancar la ventana.
         btnCrearCuenta.setDisable(true);  
     }
@@ -199,7 +199,7 @@ public class FXMLDocumentSignUpController{
      * @param newValue Nuevo valor tras el cambio.
      */
     private void cambioTexto(ObservableValue observable,String oldValue,String newValue){
-        LOGGER.info("Iniciando ControllerSignIn::cambioTexto");
+        LOGGER.info("Iniciando ControllerSignUp::cambioTexto");
         //Vaciar label de error tras escribir en cualquiera de los campos.
         lblMensajeError.setText("");
         //Vaciar label de error tras escribir en cualquiera de los campos.
@@ -221,7 +221,7 @@ public class FXMLDocumentSignUpController{
     }
 
     /**
-     * Carga la ventana signin para que el usuario se loguee si el registro ha sido correcto o se clicka el Hyperlink.
+     * Carga la ventana signIn para que el usuario se loguee si el registro ha sido correcto o se clicka el Hyperlink.
      */
     private void abrirVentanaSignIn() {
         LOGGER.log(Level.INFO,"Abriendo ventana SignIn. ");
@@ -233,12 +233,8 @@ public class FXMLDocumentSignUpController{
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
             FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
-            //Llamada al método setStage del controlador de la ventana signIn. Pasa la ventana.
-            Scene scene = new Scene(root);
-            //Añadir escena a la ventana
-            stage.setScene(scene);
-            //controladorSignUp.setStage(stage);
             //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
+            controladorSignIn.setStage(stage);
             controladorSignIn.setSignable(signable);
             //Llamada al método initStage del controlador de la ventana signIn. Pasa el documento fxml en un nodo.
             controladorSignIn.initStage(root);
@@ -305,16 +301,82 @@ public class FXMLDocumentSignUpController{
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     private boolean validarCampoUsuario() {
-        return true;
+        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)&&comprobarEspaciosBlancos(txtFieldNombre);
     }
 
+    /**
+     * 
+     * @return 
+     */
     private boolean validarCampoEmail() {
-        return true;
+        String email = txtFieldEmail.getText();
+        return emailCorrecto(email);
     }
 
+    /**
+     * 
+     * @return 
+     */
     private boolean validarCampoLogin() {
         return true;
+    }
+    
+    /**
+     * Comprueba que el texto de un campo no tenga más caracteres que el preestablecido.
+     * @param field Un campo de texto.
+     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres superan el preestablecido.
+     */
+    private Boolean maximoCaracteres(TextField field) {
+        LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
+        //booleano iniciado a true. Por defecto cumple la condición
+        Boolean numeroCaracteresCorrectos = true;
+        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
+        if(field.getText().trim().length()>MAX_LENGTH){
+            //booleana a false
+                numeroCaracteresCorrectos = false;
+        }
+        return numeroCaracteresCorrectos;
+    }
+    
+    /**
+     * Comprueba que el texto de un campo no tenga menos caracteres que el preestablecido.
+     * @param field Un campo de texto.
+     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres son menos que el preestablecido.
+     */
+    private Boolean minimoCaracteres(TextField field) {
+        LOGGER.info("Iniciando ControllerSignIn.minimoCaracteres");
+        //booleano iniciado a true.
+        Boolean numeroCaracteresCorrectos = true;
+        if(field.getText().trim().length()< MIN_LENGTH){
+                numeroCaracteresCorrectos = false;
+        }
+        return numeroCaracteresCorrectos;
+    }
+    
+     /**
+     * Comprueba que el texto de un campo no tenga espacios intermedios.
+     * @param field Un campo de texto.
+     * @return Un boolean true si hay espacios en blanco en el texto, false si por el contrario no los hay.
+     */
+    private Boolean comprobarEspaciosBlancos(TextField field) {
+        LOGGER.info("Iniciando ControllerSignIn.ComprobaEspaciosBlancos");
+        //Guardamos valos textField en string sin espacios delante ni detras.
+        String textoSinEspacios = field.getText().trim();
+        //VAriable de retorno. Inicializar a false
+        Boolean hayEspacios = false;
+        //ForEach de character. Recorremos letra a letra
+        for(Character t:textoSinEspacios.toCharArray()){
+            LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
+            //Condición de igualdad. Propiedad equals de Character. Si el caracter actual igual a espacio.
+            if(t.equals(' '))
+                hayEspacios = true;
+        }
+        return hayEspacios;
     }
 
     /**
@@ -338,55 +400,60 @@ public class FXMLDocumentSignUpController{
     private boolean emailCorrecto(String email) {
         //Boolean, va a ser el return. Inicializar a true, hasta que se demuestre lo contrario.
         boolean ok=true;
-        //Dividir el string por el caracter indicado.
-        String emailArray [] = email.split("@");
-        //Declaración array de caracteres para guardar la parte del nombre del email
-	char [] nombre;
-        //Si la longitud del array es distintode 2 significa que no hay un arroba.
-	if(emailArray.length!=2) {
-            //El email no es correcto
-            ok=false;
-            System.out.println("Has metido "+(emailArray.length -1)+" @s");
-	}
-	else {//Vamos bien hay un arroba. Estudiar el nombre. Posición 0 del array.
-            String nomUsuario = emailArray[0];
-            nombre = nomUsuario.toCharArray();
-            //Confirmar que los caracteres son mínimo 3
-            if(nomUsuario.length()<3) {//Error no cumple el mínimo de carcteres en el nombre.
-		System.out.println("Nombre usuario tiene que tener minimo 3.");
-		ok = false;
-            }		
-            else {//Vamos bien. Cumple la longitud de caracteres del nombre.
-                //Recorrer el nombre letra a letra.Solo puede tener letra numero y _ .
-		for(int i=0;i<nombre.length;i++) {
-                    //Si no se cumple error.
-                    if((Character.isLetterOrDigit(nombre[i])||Character.compare(nombre[i],'.')==0||Character.compare(nombre[i], '_')==0)==false) {
-                        ok=false;
-			System.out.println("\"Caracter incorrecto en el nombre de usuario solo letras numeros, . o _\"");
-			break;
-                    }
-		}//Si va bien por ahra mira el dominio.
-		if(ok) {//Dividir el dominio Nombre y extensión
-		    String dominio [] = emailArray[1].split("\\.");//o('.');
-		    if(dominio.length!=2) {//Si no hay solo un punto. 
-			ok=false;
-			System.out.println("Hay que separar el nombre del dominio y la extension con solo un punto");
-                    }
-                    else {//Esto mal dividir antes porque dominio tiene que tener como mucho tres letras
-			for(int j=0;j<2;j++) {
-                            nombre =  dominio[j].toCharArray();
-                            for(int letra=0;letra<nombre.length;letra++) {
-				if(Character.isAlphabetic(nombre[letra])==false) {
-                                    ok=false;
-                                    System.out.println("En el dominio solo letras nada mas");
-                                    break;
-				}	
+        if(email.length()>45)
+            ok = false;
+        else{
+            //Dividir el string por el caracter indicado.
+            String emailArray [] = email.split("@");
+            //Declaración array de caracteres para guardar la parte del nombre del email
+            char [] nombre;
+            //Si la longitud del array es distintode 2 significa que no hay un arroba.
+            if(emailArray.length!=2) {
+                //El email no es correcto
+                ok=false;
+                System.out.println("Has metido "+(emailArray.length -1)+" @s");
+            }
+            else {//Vamos bien hay un arroba. Estudiar el nombre. Posición 0 del array.
+                String nomUsuario = emailArray[0];
+                nombre = nomUsuario.toCharArray();
+                //Confirmar que los caracteres son mínimo 3
+                if(nomUsuario.length()<3) {//Error no cumple el mínimo de carcteres en el nombre.
+                    System.out.println("Nombre usuario tiene que tener minimo 3.");
+                    ok = false;
+                }		
+                else {//Vamos bien. Cumple la longitud de caracteres del nombre.
+                    //Recorrer el nombre letra a letra.Solo puede tener letra numero y _ .
+                    for(int i=0;i<nombre.length;i++) {
+                        //Si no se cumple error.
+                        if((Character.isLetterOrDigit(nombre[i])||Character.compare(nombre[i],'.')==0||Character.compare(nombre[i], '_')==0)==false) {
+                            ok=false;
+                            System.out.println("\"Caracter incorrecto en el nombre de usuario solo letras numeros, . o _\"");
+                            break;
+                        }
+                    }//Si va bien por ahra mira el dominio.
+                    if(ok) {//Dividir el dominio Nombre y extensión
+                        String dominio [] = emailArray[1].split("\\.");//o('.');
+                        if(dominio.length!=2) {//Si no hay solo un punto. 
+                            ok=false;
+                            System.out.println("Hay que separar el nombre del dominio y la extension con solo un punto");
+                        }
+                        else {//Esto mal dividir antes porque dominio tiene que tener como mucho tres letras
+                            for(int j=0;j<2;j++) {
+                                nombre =  dominio[j].toCharArray();
+                                for(int letra=0;letra<nombre.length;letra++) {
+                                    if(Character.isAlphabetic(nombre[letra])==false) {
+                                        ok=false;
+                                        System.out.println("En el dominio solo letras nada mas");
+                                        break;
+                                    }	
+                                }
                             }
-			}
+                        }
                     }
                 }
             }
-	}
+        }
+
 	return ok;
     }
 }

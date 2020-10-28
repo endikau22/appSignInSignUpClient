@@ -1,5 +1,5 @@
 /**
- *Contiene la aplicación de la aplicación Cliente
+ *Contiene la aplicación de la aplicación Cliente del proyecto SignInSignUp
  */
 package application;
 
@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**

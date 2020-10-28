@@ -1,5 +1,5 @@
 /**
- * Contiene el controlador de la aplicación cliente.
+ * Contiene el controlador de la aplicación cliente del proyecto SignInSignUp.
  */
 package controlador;
 
