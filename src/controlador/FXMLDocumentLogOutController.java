@@ -45,7 +45,7 @@ public class FXMLDocumentLogOutController{
     /**
      * Botón Salida de la aplicación
      */
-    @FXML private Button btnSalir;
+    @FXML private Button btnLogOut;
     
     /**
      * Asigna al atributo Stage de la clase una Stage recibida como parámetro.
@@ -104,12 +104,12 @@ public class FXMLDocumentLogOutController{
         //Añadir escena a la ventana
         stage.setScene(scene);
         //Asignación de un título a la ventana
-        stage.setTitle("Bienvenido a la aplicación "+usuario.getFullName());
+        stage.setTitle("Bienvenido a la aplicación "+usuario.getLogin());
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
   
         //Ejecutar método evento acción clickar botón
-        btnSalir.setOnAction(this::accionBoton);
+        btnLogOut.setOnAction(this::accionBoton);
         //Hace visible la pantalla
         stage.show();
     }
@@ -119,7 +119,7 @@ public class FXMLDocumentLogOutController{
      * @param event Un evento del botón
      */
     private void accionBoton(ActionEvent event){
-        LOGGER.info("Iniciando ControllerLogOut.accionBoton");
+        LOGGER.info("Iniciando ControllerLogOut::accionBoton");
         try {
             //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
             signable.logOut(usuario);

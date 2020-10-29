@@ -129,14 +129,13 @@ public class FXMLDocumentSignInController {
         //Asignar tamaño fijo a la ventana
         stage.setResizable(false); 
         
-        
         //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
         pswFieldContrasena.setPromptText("Introduce tu contraseña. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //Asignar texto cuando el campo está desenfocado.
         txtFieldUsuario.setPromptText("Introduce tu nombre de usuario. ("+TEXTFIELD_MIN_LENGTH+ " a "+TEXTFIELD_MAX_LENGTH+" caracteres)");
         //El boton está inhabilitado al arrancar la ventana.
         btnEntrar.setDisable(true);
-        
+
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
         //Este evento se lanza cuando la ventana esta a punto de aparecer. Este evento no se lanza al volver de otra ventana porque no abrimos una stage cambiamos de scene
         stage.setOnShowing(this::manejarInicioVentana);
@@ -273,21 +272,18 @@ public class FXMLDocumentSignInController {
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex1);
         } catch (ExcepcionPasswdIncorrecta ex2) {
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex2.getMessage());
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex2);
         } catch (Exception ex3){
             //Colocar el texto de la excepción en el label
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-            Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex3);
         }
     }
 

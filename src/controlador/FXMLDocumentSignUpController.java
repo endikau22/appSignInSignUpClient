@@ -298,7 +298,7 @@ public class FXMLDocumentSignUpController{
         } catch (Exception ex3){
             LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch Excepcion");
             //Colocar el texto de la excepción en el label
-            lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            lblMensajeError.setText(ex3.getMessage());
             //VAciar campos de texto
             txtFieldNombre.setText("");
             txtFieldEmail.setText("");
@@ -377,15 +377,15 @@ public class FXMLDocumentSignUpController{
         //Guardamos valos textField en string sin espacios delante ni detras.
         String textoSinEspacios = field.getText().trim();
         //VAriable de retorno. Inicializar a false
-        Boolean hayEspacios = false;
+        Boolean textoCorrecto = true;
         //ForEach de character. Recorremos letra a letra
         for(Character t:textoSinEspacios.toCharArray()){
             LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
             //Condición de igualdad. Propiedad equals de Character. Si el caracter actual igual a espacio.
             if(t.equals(' '))
-                hayEspacios = true;
+                textoCorrecto = false;
         }
-        return hayEspacios;
+        return textoCorrecto;
     }
 
     /**

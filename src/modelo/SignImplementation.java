@@ -87,6 +87,7 @@ public class SignImplementation implements Signable {
         //Leer los mensajes si es ok todo está bien sino lanzar excepciones.
             case OK:
                 //Devolver usuario para logout posterior.
+                user = mensaje.getUser();
                 return user;
             case USUARIO_NO_EXISTE:
                 //Lanzar excepcion de usuario no existe
