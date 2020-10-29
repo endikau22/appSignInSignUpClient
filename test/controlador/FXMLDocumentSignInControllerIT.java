@@ -5,21 +5,17 @@
  */
 package controlador;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import javafx.stage.Stage;
 
 /**
  *
  * @author 2dam
  */
-public class FXMLDocumentSignInControllerIT {
-    
-    public FXMLDocumentSignInControllerIT() {
-    }
 
-    @Test
-    public void testSomeMethod() {
-        
-    }
+@FixMethodOrder (MethodSorters.NAME_ASCENDING)
+public class FXMLDocumentSignInControllerIT extends ApplicationTest {
     
+    @Override
+    public void start (Stage stage) throws Exception {
+    }
 }
