@@ -75,7 +75,7 @@ public class SignImplementation implements Signable {
         //Crear un objeto de la clase ObjectInputStream para recibir y leer datos.
         ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
         //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
-        mensaje = (Mensaje) lecturaMensaje.readObject();   
+        mensaje = (Mensaje) lecturaMensaje.readObject(); 
         //Cerrar el ObjectOutputStream
         salidaMensaje.close();
         //Cerrar el ObjectInputStream
@@ -86,13 +86,16 @@ public class SignImplementation implements Signable {
         switch (mensaje.getAccion()) {
         //Leer los mensajes si es ok todo está bien sino lanzar excepciones.
             case OK:
+                LOGGER.info("Metodo SignIn de la clase SignImplementation Respuesta OK.");
                 //Devolver usuario para logout posterior.
                 user = mensaje.getUser();
                 return user;
             case USUARIO_NO_EXISTE:
+                LOGGER.info("Metodo SignIn de la clase SignImplementation Respuesta USUARIO_NO_EXISTE.");
                 //Lanzar excepcion de usuario no existe
                 throw new ExcepcionUserNoExiste();
             case PASSWORD_INCORRECTA:
+                LOGGER.info("Metodo SignIn de la clase SignImplementation Respuesta PASSWORD_INCORRECTA.");
                 //lanzar excepción de contraseña incorrecta.
                 throw new ExcepcionPasswdIncorrecta();
             default:
@@ -131,9 +134,11 @@ public class SignImplementation implements Signable {
         //Mirar las distintas opciones de mensaje recibidas.
         switch (mensaje.getAccion()) {
             case OK:
+                LOGGER.info("Metodo SignUp de la clase SignImplementation Respuesta OK.");
                 //Todo bien cerrar el método sin errores.
                 break;
             case USUARIO_YA_EXISTE:
+                LOGGER.info("Metodo SignUp de la clase SignImplementation Respuesta USUARIO_YA_EXISTE.");
                 throw new ExcepcionUserYaExiste();
             //Por defecto se lanza excepcion general
             default:
