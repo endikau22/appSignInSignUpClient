@@ -200,21 +200,21 @@ public class FXMLDocumentSignInController {
         LOGGER.info("Iniciando ControllerSignIn.accionBoton");
         //Si cumplen las condiciones enviar datos.
         //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
-        if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario) ||comprobarEspaciosBlancos(txtFieldUsuario)){
+        if(txtFieldUsuario.getText().length()> TEXTFIELD_MAX_LENGTH ||txtFieldUsuario.getText().length()< TEXTFIELD_MIN_LENGTH ||comprobarEspaciosBlancos(txtFieldUsuario)){
             LOGGER.info("Longitud del textfield erronea y espacios blancos ControllerSignIn.accionBoton");
-            //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
             txtFieldUsuario.selectAll();
             //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
-        }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)||comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
-            LOGGER.info("Longitud del passwordField erronea y espacios blancos ControllerSignIn.accionBoton");
             //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
+            lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
+        }else if (pswFieldContrasena.getText().length()> TEXTFIELD_MAX_LENGTH ||pswFieldContrasena.getText().length()< TEXTFIELD_MIN_LENGTH||comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+            LOGGER.info("Longitud del passwordField erronea y espacios blancos ControllerSignIn.accionBoton");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
         }else
             //Todos los campos cumplen la condición validar datos en la base de datos
             enviarDatosServidorBBDD();       
@@ -268,25 +268,25 @@ public class FXMLDocumentSignInController {
             //Llamada al método para redireccionar aplicación a la siguiente ventana.
             abrirVentanaLogOut(myUser);              
         } catch (ExcepcionUserNoExiste ex1) {
+            //VAciar campos de texto
+            txtFieldUsuario.setText("");
+            pswFieldContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex1.getMessage());
-            //VAciar campos de texto
-            txtFieldUsuario.setText("");
-            pswFieldContrasena.setText("");
             Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex1);
         } catch (ExcepcionPasswdIncorrecta ex2) {
+            //VAciar campos de texto
+            txtFieldUsuario.setText("");
+            pswFieldContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex2.getMessage());
-            //VAciar campos de texto
-            txtFieldUsuario.setText("");
-            pswFieldContrasena.setText("");
             Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex2);
         } catch (Exception ex3){
-            //Colocar el texto de la excepción en el label
-            lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
             //VAciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
+            //Colocar el texto de la excepción en el label
+            lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
             Logger.getLogger(FXMLDocumentSignInController.class.getName()).log(Level.SEVERE, null, ex3);
         }
     }

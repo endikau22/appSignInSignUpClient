@@ -262,12 +262,12 @@ public class FXMLDocumentSignUpController{
         //Todos los campos cumplen la condición validar datos en la base de datos
             enviarDatosServidorBBDD();  
         else{
-           //si al pulsar el botín los campos no cumplen las condiciones requeridas  
-           lblMensajeError.setText("El campo no es válido.");
            //Selecciona el texto del campo de texto.
            txtFieldUsuario.selectAll();
            //Pone el foco en el campo de texto.
            txtFieldUsuario.requestFocus();
+           //si al pulsar el botín los campos no cumplen las condiciones requeridas  
+           lblMensajeError.setText("El campo no es válido.");
         }
     }
     
@@ -286,25 +286,25 @@ public class FXMLDocumentSignUpController{
             abrirVentanaSignIn();
         //El método signUp de signable lanza 2 excepciones. Tratarlas en el catch.    
         } catch (ExcepcionUserYaExiste ex1) {
-            LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch ExcepcionUserYaExiste");
+            LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch ExcepcionUserYaExiste");           
+            //VAciar campos de texto
+            txtFieldNombre.setText("");
+            txtFieldEmail.setText("");
+            txtFieldUsuario.setText("");
+            pswFieldContrasena.setText("");
+            pswFieldRepetirContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblMensajeError.setText(ex1.getMessage());
-            //VAciar campos de texto
-            txtFieldNombre.setText("");
-            txtFieldEmail.setText("");
-            txtFieldUsuario.setText("");
-            pswFieldContrasena.setText("");
-            pswFieldRepetirContrasena.setText("");
         } catch (Exception ex3){
             LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch Excepcion");
-            //Colocar el texto de la excepción en el label
-            lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
             //VAciar campos de texto
             txtFieldNombre.setText("");
             txtFieldEmail.setText("");
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
             pswFieldRepetirContrasena.setText("");
+            //Colocar el texto de la excepción en el label
+            lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }
     }
 

@@ -8,8 +8,6 @@ import excepciones.ExcepcionUserNoExiste;
 import excepciones.ExcepcionUserYaExiste;
 import interfaz.Signable;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -68,18 +66,16 @@ public class SignImplementation implements Signable {
         mensaje = new Mensaje(user,Accion.SIGNIN);
         //Inicializa el socket con los valores necesarios.
         this.setSocket();
-        //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
-        ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
-        //Escribe el mensaje en el tubo del socket.
-        salidaMensaje.writeObject(mensaje);
-        //Crear un objeto de la clase ObjectInputStream para recibir y leer datos.
-        ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
-        //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
-        mensaje = (Mensaje) lecturaMensaje.readObject();   
-        //Cerrar el ObjectOutputStream
-        salidaMensaje.close();
-        //Cerrar el ObjectInputStream
-        lecturaMensaje.close();
+        //Crear el hilo.
+        ClientWorker workerCliente = new ClientWorker(unSocket);
+        //Pasar el mensaje a la clase hilo para que lo envie a la base de datos
+        workerCliente.setMensaje(mensaje); 
+        //Iniciar ejecución del Hilo
+        workerCliente.start();               
+        //Esperar a que el hilo acabe para seguir con la ejecución.
+        workerCliente.join();
+        //Recoge el mensaje del Hilo que ha recibido del servidor con la respuesta.
+        mensaje = workerCliente.getMensaje();
         //Cerrar el socket 
         unSocket.close();
         //Mirar las distintas opciones de mensaje recibidas.
@@ -113,18 +109,16 @@ public class SignImplementation implements Signable {
         mensaje = new Mensaje(user,Accion.SIGNUP);
         //Inicializa el socket con los valores necesarios.
         this.setSocket();
-        //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
-        ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
-        //Escribe el mensaje en el tubo del socket.
-        salidaMensaje.writeObject(mensaje);
-        //Crear un objeto de la clase ObjectInputStream para recibir y leer datos.
-        ObjectInputStream lecturaMensaje = new ObjectInputStream(unSocket.getInputStream());
-        //Guarda el objeto recibido en un atributo de la clase Mensaje, antes Castear de papá Object a Mensaje
-        mensaje = (Mensaje) lecturaMensaje.readObject();   
-        //Cerrar el ObjectOutputStream
-        salidaMensaje.close();
-        //Cerrar el ObjectInputStream
-        lecturaMensaje.close();
+        //Crear el hilo.
+        ClientWorker workerCliente = new ClientWorker(unSocket);
+        //Pasar el mensaje a la clase hilo para que lo envie a la base de datos
+        workerCliente.setMensaje(mensaje); 
+        //Iniciar ejecución del Hilo
+        workerCliente.start();       
+        //Esperar a que el hilo acabe para seguir con la ejecución.
+        workerCliente.join();
+        //Recoge el mensaje del Hilo que ha recibido del servidor con la respuesta.
+        mensaje = workerCliente.getMensaje();
         //Cerrar el socket 
         unSocket.close();
         //Mirar las distintas opciones de mensaje recibidas.
@@ -153,12 +147,16 @@ public class SignImplementation implements Signable {
         mensaje = new Mensaje(user,Accion.LOGOUT);
         //Inicializa el socket con los valores necesarios.
         this.setSocket();
-        //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
-        ObjectOutputStream salidaMensaje = new ObjectOutputStream(unSocket.getOutputStream());
-        //Escribe el mensaje en el tubo del socket.
-        salidaMensaje.writeObject(mensaje);
-        //Cerrar el ObjectOutputStream
-        salidaMensaje.close();
+        //Crear el hilo.
+        ClientWorker workerCliente = new ClientWorker(unSocket);
+        //Pasar el mensaje a la clase hilo para que lo envie a la base de datos
+        workerCliente.setMensaje(mensaje); 
+        //Iniciar ejecución del Hilo
+        workerCliente.start();       
+        //Esperar a que el hilo acabe para seguir con la ejecución.
+        workerCliente.join();
+        //Recoge el mensaje del Hilo que ha recibido del servidor con la respuesta.
+        mensaje = workerCliente.getMensaje();
         unSocket.close();
     }   
 }

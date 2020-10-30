@@ -106,8 +106,7 @@ public class FXMLDocumentLogOutController{
         //Asignación de un título a la ventana
         stage.setTitle("Bienvenido a la aplicación "+usuario.getFullName());
         //Asignar tamaño fijo a la ventana
-        stage.setResizable(false); 
-  
+        stage.setResizable(false);  
         //Ejecutar método evento acción clickar botón
         btnSalir.setOnAction(this::accionBoton);
         //Hace visible la pantalla
@@ -122,7 +121,7 @@ public class FXMLDocumentLogOutController{
         LOGGER.info("Iniciando ControllerLogOut.accionBoton");
         try {
             //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
-            signable.logOut(usuario);
+            signable.logOut(usuario);          
             //Abrir ventana signin
             abrirVentanaSignIn();
         //El método logout lanza una excepción. Tratarla a continuación
