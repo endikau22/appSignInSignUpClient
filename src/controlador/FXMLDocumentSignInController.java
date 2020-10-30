@@ -201,19 +201,19 @@ public class FXMLDocumentSignInController {
         //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
         if(! maximoCaracteres(txtFieldUsuario)|| ! minimoCaracteres(txtFieldUsuario) ||comprobarEspaciosBlancos(txtFieldUsuario)){
             LOGGER.info("Longitud del textfield erronea y espacios blancos ControllerSignIn.accionBoton");
-            //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
             txtFieldUsuario.selectAll();
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
             //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
         }else if (!maximoCaracteres((TextField)pswFieldContrasena) ||! minimoCaracteres((TextField)pswFieldContrasena)||comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
             LOGGER.info("Longitud del passwordField erronea y espacios blancos ControllerSignIn.accionBoton");
-            //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
+            //Mostrar un mensaje de error en el label.
+            lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
         }else
             //Todos los campos cumplen la condición validar datos en la base de datos
             enviarDatosServidorBBDD();       
@@ -267,23 +267,23 @@ public class FXMLDocumentSignInController {
             //Llamada al método para redireccionar aplicación a la siguiente ventana.
             abrirVentanaLogOut(myUser);              
         } catch (ExcepcionUserNoExiste ex1) {
+            //Vaciar campos de texto
+            txtFieldUsuario.setText("");
+            pswFieldContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex1.getMessage());
-            //VAciar campos de texto
+        } catch (ExcepcionPasswdIncorrecta ex2) {
+            //Vaciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-        } catch (ExcepcionPasswdIncorrecta ex2) {
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex2.getMessage());
-            //VAciar campos de texto
+        } catch (Exception ex3){
+            //Vaciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
-        } catch (Exception ex3){
             //Colocar el texto de la excepción en el label
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
-            //VAciar campos de texto
-            txtFieldUsuario.setText("");
-            pswFieldContrasena.setText("");
         }
     }
 
