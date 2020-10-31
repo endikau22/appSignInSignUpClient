@@ -320,8 +320,8 @@ public class FXMLDocumentSignUpController{
     private void enviarDatosServidorBBDD() {
         LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD");
         //Almacenar en objeto de User los datos recogidos de los campos de la ventana.
-        User myUser = new User (txtFieldUsuario.getText().trim(),pswFieldContrasena.getText().trim(),
-                txtFieldNombre.getText().trim(),txtFieldEmail.getText().trim());
+        User myUser = new User (txtFieldUsuario.getText().trim(),txtFieldEmail.getText().trim(),
+                txtFieldNombre.getText().trim(),pswFieldContrasena.getText().trim());
         try {
             //Pasa el usuario a la instancia signable a su método signUp.
             signable.signUp(myUser);
@@ -350,6 +350,17 @@ public class FXMLDocumentSignUpController{
      * @return Un Booleano. True si el campo cumple los requisitos, false si no lo hace. 
      */
     private Boolean validarCampoNombre(TextField field) {
+        //Vamos a ver primero si el texto son solo letras y numeros.
+        String textoConCaracteres = field.getText().trim();
+        //ForEach de character. Recorremos letra a letra
+        for(Character t:textoConCaracteres.toCharArray()){
+            LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
+            //Si el caracter no es ni número ni letra retorna false;
+            if(! Character.isLetterOrDigit(t)){
+                System.out.println(t);
+                return false;
+            }
+        }//El texto está compuesto por letras y números
         return maximoCaracteres(field)&&minimoCaracteres(field)
                 &&comprobarEspaciosBlancos(field);
     }

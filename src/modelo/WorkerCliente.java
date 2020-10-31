@@ -19,6 +19,11 @@ import mensaje.Mensaje;
  */
 public class WorkerCliente extends Thread{
     /**
+     * Atributo Logger para rastrear los pasos de ejecución del programa.
+     */
+    private static final Logger LOGGER = 
+            Logger.getLogger("grupog5.signinsignupapplication.cliente.workerCliente.thread");
+    /**
      * Un mensaje. Contiene un usuario y una acción.
      */
     private Mensaje mensaje;
@@ -54,7 +59,9 @@ public class WorkerCliente extends Thread{
     /**
      * Método que ejecuta el hilo. Arranca cuando un objeto de la clase ejecuta el método start(). 
      */
-    public void run(){
+    public void run(){       
+        //Mensaje Logger al acceder al método
+        LOGGER.log(Level.INFO, "Método run del hilo de la clase WorkerCliente");
         //Crear un objeto de la clase ObjectOutputStream para escritura y salida de datos.
         ObjectOutputStream salidaMensaje = null;
         //Crear un objeto de la clase ObjectInput para lectura de datos.
