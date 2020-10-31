@@ -156,7 +156,11 @@ public class SignImplementation implements Signable {
         //Esperar a que el hilo acabe para seguir con la ejecución.
         workerCliente.join();
         //Recoge el mensaje del Hilo que ha recibido del servidor con la respuesta.
-        mensaje = workerCliente.getMensaje();
+        //Cerrar el socket.
         unSocket.close();
+        mensaje = workerCliente.getMensaje();
+        //Si el mensaje no es ok lanzar excepción
+        if(!mensaje.getAccion().equals(Accion.OK))
+            throw new Exception();       
     }   
 }

@@ -1,5 +1,5 @@
 /**
- * Contiene el controlador de la aplicación cliente del proyecto SignInSignUp.
+ * Contiene los controladores de la aplicación cliente del proyecto SignInSignUp.
  */
 package controlador;
 
@@ -20,7 +20,7 @@ import user.User;
 
 
 /**
- * FXML Controller class para la scena LogOut
+ * FXML Controller class para la escena LogOut
  * @version 1.0
  * @since 23/10/2020
  * @author Eneko, Endika, Markel
@@ -35,7 +35,7 @@ public class FXMLDocumentLogOutController{
      */
     private Stage stage;
     /**
-     * Un signImplementation
+     * Un Signable.
      */
     private Signable signable;
     /**
@@ -94,7 +94,7 @@ public class FXMLDocumentLogOutController{
     }
 
     /**
-     * Inicializa una Stage.
+     * Inicializa la escena sobre la ventana.
      * @param root Un nodo FXML
      */
     public void initStage(Parent root) {
@@ -114,7 +114,7 @@ public class FXMLDocumentLogOutController{
         stage.show();
     }
 
-       /**
+     /**
      * Tratar el click del botón
      * @param event Un evento del botón
      */
@@ -135,7 +135,7 @@ public class FXMLDocumentLogOutController{
         
     }
     /**
-     * Carga la ventana signin para que el usuario se loguee si el registro ha sido correcto o se clicka el Hyperlink.
+     * Carga la ventana signIn.
      */
     private void abrirVentanaSignIn() {
         LOGGER.log(Level.INFO,"Abriendo ventana SignIn. ");

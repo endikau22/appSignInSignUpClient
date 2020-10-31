@@ -1,5 +1,5 @@
 /**
- * Contiene el controlador de la aplicación cliente del proyecto SignInSignUp. 
+ * Contiene los controladores de la aplicación cliente del proyecto SignInSignUp. 
  */
 package controlador;
 
@@ -46,11 +46,15 @@ public class FXMLDocumentSignUpController{
     /**
      * Longitud máxima de los campos de texto permitida.
      */
-    private static final int TEXTFIELD_MAX_LENGTH = 20;
+    private static final Integer TEXTFIELD_MAX_LENGTH = 20;
     /**
-     * Longitud minima de los campos de texto permitida.
+     * Longitud mínima de los campos de texto permitida.
      */
-    private static final int TEXTFIELD_MIN_LENGTH = 4;
+    private static final Integer TEXTFIELD_MIN_LENGTH = 4;
+    /**
+     * Longitud máxima del campo email permitida.
+     */
+    private static final Integer TEXTFIELD_EMAIL_MAX_LENGTH = 45;
     /**
      * Botón de confirmación de crear cuenta.
      */
@@ -83,8 +87,7 @@ public class FXMLDocumentSignUpController{
      * Label informátivo gráfico de los distintos errores.
      */
     @FXML private Label lblMensajeError; 
-    
-    
+       
     /**
      * Asigna al atributo Stage de la clase una Stage recibida como parámetro.
      * @param stage Una ventana JavaFx.
@@ -117,8 +120,13 @@ public class FXMLDocumentSignUpController{
         return stage;
     }
 
+    /**
+     * Método que añade la escena en la ventana e inicializa los distintos componenetes de la escena.
+     * @param root Un nodo FXML en formato gráfico.
+     */
     public void initStage(Parent root) {
-        LOGGER.log(Level.INFO,"Inicializando la ventana signUp. ");
+        //Este método es el primero que se ejecuta de la escena al haber sido llamado desde la clase anterior
+        LOGGER.log(Level.INFO,"Inicializando la escena signUp. ");
         //Creación de  una nueva escena
         Scene scene = new Scene(root);
         //Añadir escena a la ventana
@@ -131,7 +139,7 @@ public class FXMLDocumentSignUpController{
         //Iniciar los componentes de la escena. TextFields y botones.
         iniciarComponentesEscena();
         //Ejecutar método handleWindowShowing cuando se produzca el evento setOnShowing
-        //Este evento se lanza cuando la ventana está a punto de aparecer.
+        //Este evento se lanza cuando la ventana está a punto de aparecer. En nuestro caso nunca se va a ejecutar, podríamos quitarlo.
         stage.setOnShowing(this::manejarInicioVentana);
         //Añadir un evento para el cambio de texto en cada uno de los campos de texto.     
         txtFieldUsuario.textProperty().addListener(this::cambioTexto);
@@ -148,6 +156,9 @@ public class FXMLDocumentSignUpController{
         stage.show();
     }
     
+    /**
+     * Inicializa los componentes de la escena con los valores a mostrar al cargar la escena en la ventana.
+     */
     public void iniciarComponentesEscena(){
         LOGGER.log(Level.INFO,"Iniciar componentes de la escena. ");
         //Asignar un texto de fondo en el campo contraseña, se muestra cuando el campo está desenfocado.
@@ -239,7 +250,7 @@ public class FXMLDocumentSignUpController{
             Parent root = (Parent)loader.load();
             //Relacionamos el documento FXML con el controlador que le va a controlar.
             FXMLDocumentSignInController controladorSignIn = (FXMLDocumentSignInController)loader.getController();
-            //Llamada al método setSignable del controlador de la ventana signIn. Pasa instancia SignImplementation.
+            //Llamada al método setSignable del controlador de la escena signIn. Pasa instancia SignImplementation.
             controladorSignIn.setStage(stage);
             //Pasar el objeto signable al controlador SignIn.
             controladorSignIn.setSignable(signable);
@@ -257,17 +268,49 @@ public class FXMLDocumentSignUpController{
      */
     private void accionBoton(ActionEvent e){
         LOGGER.info("Iniciando ControllerSignUp.accionBoton");
-        //Si cumplen las condiciones los cuatro campos de texto..
-        if(validarCampoUsuario()&&validarCampoEmail()&&validarCampoLogin()&&validarContraseñas())
-        //Todos los campos cumplen la condición validar datos en la base de datos
-            enviarDatosServidorBBDD();  
+            //Si cumplen las condiciones los cuatro campos de texto..
+            if(!validarCampoNombre(txtFieldNombre)){
+                //Selecciona el texto del campo de texto.
+                txtFieldNombre.selectAll();
+                //Pone el foco en el campo de texto.
+                txtFieldNombre.requestFocus();
+                //Mostrar mensaje error  
+                lblMensajeError.setText("El campo nombre no es válido.");
+            }else if(! validarCampoEmail(txtFieldEmail)){
+                //Selecciona el texto del campo de texto.
+                txtFieldEmail.selectAll();
+                //Pone el foco en el campo de texto.
+                txtFieldEmail.requestFocus();
+                //Mostrar mensaje error  
+                lblMensajeError.setText("El campo email no es válido.");
+            }else if(! validarCampoLogin(txtFieldUsuario)){
+                //Selecciona el texto del campo de texto.
+                txtFieldUsuario.selectAll();
+                //Pone el foco en el campo de texto.
+                txtFieldUsuario.requestFocus();
+                //Mostrar mensaje error  
+                lblMensajeError.setText("El campo usuario no es válido.");
+            }else if(!validarContraseñas((TextField)pswFieldContrasena,(TextField)pswFieldRepetirContrasena)){
+                //Sabemos que el error enstá en las contraseñas. 2 opciones No son iguales o no cumple los requisitos.
+                if(pswFieldContrasena.getText().trim().equals(pswFieldRepetirContrasena.getText().trim())){
+                     //Selecciona el texto del campo de texto.
+                    pswFieldContrasena.selectAll();
+                    //Pone el foco en el campo de texto.
+                    txtFieldUsuario.requestFocus();
+                    //Mostrar mensaje error    
+                    lblMensajeError.setText("Los campos contraseña no coinciden.");
+                }else{
+                     //Selecciona el texto del campo de texto.
+                    pswFieldContrasena.selectAll();
+                    //Pone el foco en el campo de texto.
+                    txtFieldUsuario.requestFocus();
+                    //Mostrar mensaje error  
+                    lblMensajeError.setText("El campo contraseña no es válido.");
+                }                 
+            }            
         else{
-           //si al pulsar el botín los campos no cumplen las condiciones requeridas  
-           lblMensajeError.setText("El campo no es válido.");
-           //Selecciona el texto del campo de texto.
-           txtFieldUsuario.selectAll();
-           //Pone el foco en el campo de texto.
-           txtFieldUsuario.requestFocus();
+            //Todos los campos cumplen la condición validar datos en la base de datos
+            enviarDatosServidorBBDD(); 
         }
     }
     
@@ -277,8 +320,8 @@ public class FXMLDocumentSignUpController{
     private void enviarDatosServidorBBDD() {
         LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD");
         //Almacenar en objeto de User los datos recogidos de los campos de la ventana.
-        User myUser = new User (txtFieldUsuario.getText(),pswFieldContrasena.getText(),
-                txtFieldNombre.getText(),txtFieldEmail.getText());
+        User myUser = new User (txtFieldUsuario.getText().trim(),pswFieldContrasena.getText().trim(),
+                txtFieldNombre.getText().trim(),txtFieldEmail.getText().trim());
         try {
             //Pasa el usuario a la instancia signable a su método signUp.
             signable.signUp(myUser);
@@ -287,71 +330,68 @@ public class FXMLDocumentSignUpController{
         //El método signUp de signable lanza 2 excepciones. Tratarlas en el catch.    
         } catch (ExcepcionUserYaExiste ex1) {
             LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch ExcepcionUserYaExiste");
-            //Colocar el texto de la excepción en el label
-            lblMensajeError.setText(ex1.getMessage());
             //VAciar campos de texto
             txtFieldNombre.setText("");
             txtFieldEmail.setText("");
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
             pswFieldRepetirContrasena.setText("");
+            //Colocar el texto de la excepción en el label
+            lblMensajeError.setText(ex1.getMessage());
         } catch (Exception ex3){
             LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch Excepcion");
             //Colocar el texto de la excepción en el label
-            lblMensajeError.setText(ex3.getMessage());
-            //VAciar campos de texto
-            txtFieldNombre.setText("");
-            txtFieldEmail.setText("");
-            txtFieldUsuario.setText("");
-            pswFieldContrasena.setText("");
-            pswFieldRepetirContrasena.setText("");
+            lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
         }
     }
 
     /**
-     * 
-     * @return 
+     * Comprueba que el contenido del campo de texto Nombre cumple los requisitos
+     * @return Un Booleano. True si el campo cumple los requisitos, false si no lo hace. 
      */
-    private boolean validarCampoUsuario() {
-        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)
-                &&comprobarEspaciosBlancos(txtFieldNombre);
+    private Boolean validarCampoNombre(TextField field) {
+        return maximoCaracteres(field)&&minimoCaracteres(field)
+                &&comprobarEspaciosBlancos(field);
     }
 
     /**
-     * 
-     * @return 
+     * Comprueba que el contenido del campo de texto Email cumple los requisitos
+     * @return Un Booleano. True si el campo cumple los requisitos, false si no lo hace.
      */
-    private boolean validarCampoEmail() {
-        String email = txtFieldEmail.getText();
-        return emailCorrecto(email);
+    private Boolean validarCampoEmail(TextField field) {
+        String email = field.getText().trim();
+        //Si el String email del campo de texto email es superior a la constante preestablecida retornar false
+        if (email.length()>TEXTFIELD_EMAIL_MAX_LENGTH)
+            return false;
+        //El String entra dentro del rango de longitud mirar su contenido
+        else
+            return emailCorrecto(email);
     }
 
     /**
-     * 
-     * @return 
+     * Comprueba que el contenido del campo de texto Login cumple los requisitos
+     * @return Un Booleano. True si el campo cumple los requisitos, false si no lo hace.
      */
-    private boolean validarCampoLogin() {
-        return maximoCaracteres(txtFieldNombre)&&minimoCaracteres(txtFieldNombre)
-                &&comprobarEspaciosBlancos(txtFieldNombre);
+    private Boolean validarCampoLogin(TextField field) {
+        return maximoCaracteres(field)&&minimoCaracteres(field)
+                &&comprobarEspaciosBlancos(field);
     }
+    
     
     /**
-     * Comprueba que el texto de un campo no tenga más caracteres que el preestablecido.
-     * @param field Un campo de texto.
-     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres superan el preestablecido.
+     * Validación del campo contraseña y repetir contraseña. Deben ser iguales ambos campos y máximo 30 caracteres.
+     * @return Un booleano. True si la contraseña es correcta.
      */
-    private Boolean maximoCaracteres(TextField field) {
-        LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
-        //booleano iniciado a true. Por defecto cumple la condición
-        Boolean numeroCaracteresCorrectos = true;
-        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
-        if(field.getText().trim().length() > TEXTFIELD_MAX_LENGTH){
-            //booleana a false
-                numeroCaracteresCorrectos = false;
-        }
-        return numeroCaracteresCorrectos;
+    private boolean validarContraseñas(TextField contraseniaUno, TextField contraseniaDos) {
+      //Comparar los dos campos contraseña. Si son iguales y además tiene una longitud superior a 4 e inferior a 20.
+      return contraseniaUno.getText().trim().equals(contraseniaDos.getText().trim()) 
+              && maximoCaracteres(contraseniaUno)&& minimoCaracteres(contraseniaUno)
+              && comprobarEspaciosBlancos(contraseniaUno)&& maximoCaracteres(contraseniaDos)
+              && minimoCaracteres(contraseniaDos)
+              && comprobarEspaciosBlancos(contraseniaDos);
     }
     
+      
     /**
      * Comprueba que el texto de un campo no tenga menos caracteres que el preestablecido.
      * @param field Un campo de texto.
@@ -388,17 +428,6 @@ public class FXMLDocumentSignUpController{
         return textoCorrecto;
     }
 
-    /**
-     * Validación del campo contraseña y repetir contraseña. Deben ser iguales ambos campos y máximo 30 caracteres.
-     * @return Un booleano. True si la contraseña es correcta.
-     */
-    private boolean validarContraseñas() {
-      //Comparar los dos campos contraseña. Si son iguales y además tiene una longitud superior a 4 e inferior a 20.
-      return pswFieldContrasena.getText().equals(pswFieldRepetirContrasena.getText()) 
-              && maximoCaracteres((TextField)pswFieldContrasena)&& minimoCaracteres((TextField)pswFieldContrasena)
-              && comprobarEspaciosBlancos((TextField)pswFieldContrasena);
-    }
-    
     /**
      * Comprueba que el String recibido como parámetro cumple las condiciones de un email.
      * @param email El email del campo contraseña.
@@ -467,5 +496,22 @@ public class FXMLDocumentSignUpController{
         }
 
 	return ok;
+    }
+    
+    /**
+     * Comprueba que el texto de un campo no tenga más caracteres que el preestablecido.
+     * @param field Un campo de texto.
+     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres superan el preestablecido.
+     */
+    private Boolean maximoCaracteres(TextField field) {
+        LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
+        //booleano iniciado a true. Por defecto cumple la condición
+        Boolean numeroCaracteresCorrectos = true;
+        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
+        if(field.getText().trim().length() > TEXTFIELD_MAX_LENGTH){
+            //booleana a false
+                numeroCaracteresCorrectos = false;
+        }
+        return numeroCaracteresCorrectos;
     }
 }
