@@ -1,6 +1,4 @@
-/**
- * Contiene el modelo de la aplicación cliente.
- */
+
 package modelo;
 
 import java.io.IOException;

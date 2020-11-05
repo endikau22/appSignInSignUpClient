@@ -1,10 +1,9 @@
-/**
- * Contiene los controladores de la aplicación cliente del proyecto SignInSignUp.
- */
+
 package controlador;
 
 import interfaz.Signable;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -106,8 +105,7 @@ public class FXMLDocumentLogOutController{
         //Asignación de un título a la ventana
         stage.setTitle("Bienvenido a la aplicación "+usuario.getLogin());
         //Asignar tamaño fijo a la ventana
-        stage.setResizable(false); 
-  
+        stage.setResizable(false);
         //Ejecutar método evento acción clickar botón
         btnLogOut.setOnAction(this::accionBoton);
         //Hace visible la pantalla
@@ -120,15 +118,21 @@ public class FXMLDocumentLogOutController{
      */
     private void accionBoton(ActionEvent event){
         LOGGER.info("Iniciando ControllerLogOut::accionBoton");
+        Alert alert; 
         try {
-            //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
-            signable.logOut(usuario);
-            //Abrir ventana signin
-            abrirVentanaSignIn();
+            alert = new Alert(Alert.AlertType.CONFIRMATION,"Estás seguro que quieres salir?.");
+            alert.setHeaderText(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                //Pasar datos del usuario para que el signable lo envíe a la base de datos para que registre la hora de salida.
+                signable.logOut(usuario);          
+                //Abrir ventana signin
+                abrirVentanaSignIn();  
+            }
         //El método logout lanza una excepción. Tratarla a continuación
         } catch (Exception ex) {
             LOGGER.log(Level.INFO,"Execepción SQL al intentar LogOut");
-            Alert alert = new Alert(Alert.AlertType.ERROR,"Error al cerrar sesión, espera unos segundos."
+            alert = new Alert(Alert.AlertType.ERROR,"Error al cerrar sesión, espera unos segundos."
                     ,ButtonType.OK);
             alert.showAndWait();
         }

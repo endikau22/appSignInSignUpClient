@@ -1,8 +1,7 @@
-/**
- * Contiene los controladores de la aplicación cliente del proyecto SignInSignUp. 
- */
+
 package controlador;
 
+import contenedormetodos.MetodosUtiles;
 import excepciones.ExcepcionUserYaExiste;
 import interfaz.Signable;
 import java.io.IOException;
@@ -20,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import user.User;
@@ -259,6 +259,8 @@ public class FXMLDocumentSignUpController{
         //Error al cargar la nueva escenamostrar mensaje.
         }catch(IOException e){
             lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblMensajeError.setTextFill(Color.web("#ff0000"));
         }
     }
     
@@ -276,6 +278,8 @@ public class FXMLDocumentSignUpController{
                 txtFieldNombre.requestFocus();
                 //Mostrar mensaje error  
                 lblMensajeError.setText("El campo nombre no es válido.");
+                //Cambia de color el texto del label, en este caso a rojo
+                lblMensajeError.setTextFill(Color.web("#ff0000"));
             }else if(! validarCampoEmail(txtFieldEmail)){
                 //Selecciona el texto del campo de texto.
                 txtFieldEmail.selectAll();
@@ -283,6 +287,8 @@ public class FXMLDocumentSignUpController{
                 txtFieldEmail.requestFocus();
                 //Mostrar mensaje error  
                 lblMensajeError.setText("El campo email no es válido.");
+                //Cambia de color el texto del label, en este caso a rojo
+                lblMensajeError.setTextFill(Color.web("#ff0000"));
             }else if(! validarCampoLogin(txtFieldUsuario)){
                 //Selecciona el texto del campo de texto.
                 txtFieldUsuario.selectAll();
@@ -290,22 +296,28 @@ public class FXMLDocumentSignUpController{
                 txtFieldUsuario.requestFocus();
                 //Mostrar mensaje error  
                 lblMensajeError.setText("El campo usuario no es válido.");
+                //Cambia de color el texto del label, en este caso a rojo
+                lblMensajeError.setTextFill(Color.web("#ff0000"));
             }else if(!validarContraseñas((TextField)pswFieldContrasena,(TextField)pswFieldRepetirContrasena)){
                 //Sabemos que el error enstá en las contraseñas. 2 opciones No son iguales o no cumple los requisitos.
-                if(pswFieldContrasena.getText().trim().equals(pswFieldRepetirContrasena.getText().trim())){
+                if(!pswFieldContrasena.getText().trim().equals(pswFieldRepetirContrasena.getText().trim())){
                      //Selecciona el texto del campo de texto.
                     pswFieldContrasena.selectAll();
                     //Pone el foco en el campo de texto.
-                    txtFieldUsuario.requestFocus();
+                    pswFieldContrasena.requestFocus();
                     //Mostrar mensaje error    
                     lblMensajeError.setText("Los campos contraseña no coinciden.");
+                    //Cambia de color el texto del label, en este caso a rojo
+                    lblMensajeError.setTextFill(Color.web("#ff0000"));
                 }else{
                      //Selecciona el texto del campo de texto.
                     pswFieldContrasena.selectAll();
                     //Pone el foco en el campo de texto.
-                    txtFieldUsuario.requestFocus();
+                    pswFieldContrasena.requestFocus();
                     //Mostrar mensaje error  
                     lblMensajeError.setText("El campo contraseña no es válido.");
+                    //Cambia de color el texto del label, en este caso a rojo
+                    lblMensajeError.setTextFill(Color.web("#ff0000"));
                 }                 
             }            
         else{
@@ -338,10 +350,14 @@ public class FXMLDocumentSignUpController{
             pswFieldRepetirContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblMensajeError.setText(ex1.getMessage());
+            //Cambia de color el texto del label, en este caso a rojo
+            lblMensajeError.setTextFill(Color.web("#ff0000"));
         } catch (Exception ex3){
             LOGGER.info("Iniciando ControllerSignUp.EnviarDatosServidorBBDD.Entra al catch Excepcion");
             //Colocar el texto de la excepción en el label
             lblMensajeError.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblMensajeError.setTextFill(Color.web("#ff0000"));
         }
     }
 
@@ -356,13 +372,13 @@ public class FXMLDocumentSignUpController{
         for(Character t:textoConCaracteres.toCharArray()){
             LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
             //Si el caracter no es ni número ni letra retorna false;
-            if(! Character.isLetterOrDigit(t)){
+            if(! Character.isLetter(t)){
                 System.out.println(t);
                 return false;
             }
         }//El texto está compuesto por letras y números
-        return maximoCaracteres(field)&&minimoCaracteres(field)
-                &&comprobarEspaciosBlancos(field);
+        return MetodosUtiles.maximoCaracteres(field,TEXTFIELD_MAX_LENGTH)&&
+                MetodosUtiles.minimoCaracteres(field,TEXTFIELD_MIN_LENGTH);
     }
 
     /**
@@ -376,7 +392,7 @@ public class FXMLDocumentSignUpController{
             return false;
         //El String entra dentro del rango de longitud mirar su contenido
         else
-            return emailCorrecto(email);
+            return MetodosUtiles.emailCorrecto(email);
     }
 
     /**
@@ -384,11 +400,10 @@ public class FXMLDocumentSignUpController{
      * @return Un Booleano. True si el campo cumple los requisitos, false si no lo hace.
      */
     private Boolean validarCampoLogin(TextField field) {
-        return maximoCaracteres(field)&&minimoCaracteres(field)
-                &&comprobarEspaciosBlancos(field);
+        return MetodosUtiles.maximoCaracteres(field,TEXTFIELD_MAX_LENGTH)&&MetodosUtiles.minimoCaracteres(field,TEXTFIELD_MIN_LENGTH)
+                &&MetodosUtiles.comprobarEspaciosBlancos(field);
     }
-    
-    
+       
     /**
      * Validación del campo contraseña y repetir contraseña. Deben ser iguales ambos campos y máximo 30 caracteres.
      * @return Un booleano. True si la contraseña es correcta.
@@ -396,133 +411,13 @@ public class FXMLDocumentSignUpController{
     private boolean validarContraseñas(TextField contraseniaUno, TextField contraseniaDos) {
       //Comparar los dos campos contraseña. Si son iguales y además tiene una longitud superior a 4 e inferior a 20.
       return contraseniaUno.getText().trim().equals(contraseniaDos.getText().trim()) 
-              && maximoCaracteres(contraseniaUno)&& minimoCaracteres(contraseniaUno)
-              && comprobarEspaciosBlancos(contraseniaUno)&& maximoCaracteres(contraseniaDos)
-              && minimoCaracteres(contraseniaDos)
-              && comprobarEspaciosBlancos(contraseniaDos);
+              && MetodosUtiles.maximoCaracteres(contraseniaUno,TEXTFIELD_MAX_LENGTH)
+              && MetodosUtiles.minimoCaracteres(contraseniaUno,TEXTFIELD_MIN_LENGTH)
+              && MetodosUtiles.comprobarEspaciosBlancos(contraseniaUno)
+              && MetodosUtiles.maximoCaracteres(contraseniaDos,TEXTFIELD_MAX_LENGTH)
+              && MetodosUtiles.minimoCaracteres(contraseniaDos,TEXTFIELD_MIN_LENGTH)
+              && MetodosUtiles.comprobarEspaciosBlancos(contraseniaDos);
+  
     }
-    
-      
-    /**
-     * Comprueba que el texto de un campo no tenga menos caracteres que el preestablecido.
-     * @param field Un campo de texto.
-     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres son menos que el preestablecido.
-     */
-    private Boolean minimoCaracteres(TextField field) {
-        LOGGER.info("Iniciando ControllerSignUp.minimoCaracteres");
-        //booleano iniciado a true.
-        Boolean numeroCaracteresCorrectos = true;
-        if(field.getText().trim().length() < TEXTFIELD_MIN_LENGTH){
-                numeroCaracteresCorrectos = false;
-        }
-        return numeroCaracteresCorrectos;
-    }
-    
-     /**
-     * Comprueba que el texto de un campo no tenga espacios intermedios.
-     * @param field Un campo de texto.
-     * @return Un boolean true si hay espacios en blanco en el texto, false si por el contrario no los hay.
-     */
-    private Boolean comprobarEspaciosBlancos(TextField field) {
-        LOGGER.info("Iniciando ControllerSignUp.ComprobaEspaciosBlancos");
-        //Guardamos valos textField en string sin espacios delante ni detras.
-        String textoSinEspacios = field.getText().trim();
-        //VAriable de retorno. Inicializar a false
-        Boolean textoCorrecto = true;
-        //ForEach de character. Recorremos letra a letra
-        for(Character t:textoSinEspacios.toCharArray()){
-            LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
-            //Condición de igualdad. Propiedad equals de Character. Si el caracter actual igual a espacio.
-            if(t.equals(' '))
-                textoCorrecto = false;
-        }
-        return textoCorrecto;
-    }
-
-    /**
-     * Comprueba que el String recibido como parámetro cumple las condiciones de un email.
-     * @param email El email del campo contraseña.
-     * @return Un booleano.  True si la contraseña es correcta.
-     */
-    private boolean emailCorrecto(String email) {
-        //Boolean, va a ser el return. Inicializar a true, hasta que se demuestre lo contrario.
-        boolean ok=true;
-        if(email.length()>45)
-            ok = false;
-        else{
-            //Dividir el string por el caracter indicado.
-            String emailArray [] = email.split("@");
-            //Declaración array de caracteres para guardar la parte del nombre del email
-            char [] nombre;
-            //Si la longitud del array es distintode 2 significa que no hay un arroba.
-            if(emailArray.length!=2) {
-                //El email no es correcto
-                ok=false;
-                //System.out.println("Has metido "+(emailArray.length -1)+" @s");
-            }
-            else {//Vamos bien hay un arroba. Estudiar el nombre. Posición 0 del array.
-                String nomUsuario = emailArray[0];
-                nombre = nomUsuario.toCharArray();
-                //Confirmar que los caracteres son mínimo 3
-                if(nomUsuario.length()<3) {//Error no cumple el mínimo de carcteres en el nombre.
-                    //System.out.println("Nombre usuario tiene que tener minimo 3.");
-                    ok = false;
-                }		
-                else {//Vamos bien. Cumple la longitud de caracteres del nombre.
-                    //Recorrer el nombre letra a letra.Solo puede tener letra numero y _ .
-                    for(int i=0;i<nombre.length;i++) {
-                        //Si no se cumple error.
-                        if((Character.isLetterOrDigit(nombre[i])||Character.compare(nombre[i],'.')==0||Character.compare(nombre[i], '_')==0)==false) {
-                            ok=false;
-                            //System.out.println("\"Caracter incorrecto en el nombre de usuario solo letras numeros, . o _\"");
-                            break;
-                        }
-                    }//Si va bien por ahra mira el dominio.
-                    if(ok) {//Dividir el dominio Nombre y extensión
-                        String dominio [] = emailArray[1].split("\\.");//o('.');
-                        if(dominio.length!=2) {//Si no hay solo un punto. 
-                            ok=false;
-                            //System.out.println("Hay que separar el nombre del dominio y la extension con solo un punto");
-                        }
-                        else {
-                            for(int j=0;j<2;j++) {
-                                nombre =  dominio[j].toCharArray();
-                                if(j==1){//La extensión del dominio 2 o 3 letras.
-                                    if(nombre.length>3 || nombre.length<2){
-                                        ok= false;
-                                    }
-                                }
-                                for(int letra=0;letra<nombre.length;letra++) {
-                                    if(Character.isAlphabetic(nombre[letra])==false) {
-                                        ok=false;
-                                        //System.out.println("En el dominio solo letras nada mas");
-                                        break;
-                                    }	
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-	return ok;
-    }
-    
-    /**
-     * Comprueba que el texto de un campo no tenga más caracteres que el preestablecido.
-     * @param field Un campo de texto.
-     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres superan el preestablecido.
-     */
-    private Boolean maximoCaracteres(TextField field) {
-        LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
-        //booleano iniciado a true. Por defecto cumple la condición
-        Boolean numeroCaracteresCorrectos = true;
-        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
-        if(field.getText().trim().length() > TEXTFIELD_MAX_LENGTH){
-            //booleana a false
-                numeroCaracteresCorrectos = false;
-        }
-        return numeroCaracteresCorrectos;
-    }
+ 
 }

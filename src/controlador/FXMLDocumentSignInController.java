@@ -1,6 +1,4 @@
-/**
- * Contiene los controladores de la aplicación cliente del proyecto SignInSignUp.
- */
+
 package controlador;
 
 import excepciones.ExcepcionPasswdIncorrecta;
@@ -22,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import user.User;
@@ -215,27 +214,31 @@ public class FXMLDocumentSignInController {
         LOGGER.info("Iniciando ControllerSignIn.accionBoton");
         //Si cumplen las condiciones enviar datos.
         //El campo usuario tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
-        if(! maximoCaracteres(txtFieldUsuario,TEXTFIELD_MAX_LENGTH)|| 
-                ! minimoCaracteres(txtFieldUsuario,TEXTFIELD_MIN_LENGTH) ||
-                ! comprobarEspaciosBlancos(txtFieldUsuario)){
+        if(! MetodosUtiles.maximoCaracteres(txtFieldUsuario,TEXTFIELD_MAX_LENGTH)|| 
+                ! MetodosUtiles.minimoCaracteres(txtFieldUsuario,TEXTFIELD_MIN_LENGTH) ||
+                ! MetodosUtiles.comprobarEspaciosBlancos(txtFieldUsuario)){
             LOGGER.info("Longitud del textfield erronea y espacios blancos ControllerSignIn.accionBoton");
             //El foco lo pone en el campo usuario
             txtFieldUsuario.requestFocus();
             //Selecciona el texto para borrar.
             txtFieldUsuario.selectAll();
             //Mostrar un mensaje de error en el label.
+            //Vaciar el campo contraseña
+            pswFieldContrasena.setText("");
             lblErrorUsuarioContrasena.setText("Usuario incorrecto.");
-            lblErrorUsuarioContrasena.setStyle("-fx-text-inner-color: red");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorUsuarioContrasena.setTextFill(Color.web("#ff0000"));
             //El campo contraseña tiene una longitud que no está entre 4 y 20 caracteres y no tiene espacios.
-        }else if (!maximoCaracteres((TextField)pswFieldContrasena, TEXTFIELD_MAX_LENGTH) 
-                ||! minimoCaracteres((TextField)pswFieldContrasena, TEXTFIELD_MIN_LENGTH)
-                ||!comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
+        }else if (!MetodosUtiles.maximoCaracteres((TextField)pswFieldContrasena, TEXTFIELD_MAX_LENGTH) 
+                ||! MetodosUtiles.minimoCaracteres((TextField)pswFieldContrasena, TEXTFIELD_MIN_LENGTH)
+                ||!MetodosUtiles.comprobarEspaciosBlancos((TextField)pswFieldContrasena)){
             LOGGER.info("Longitud del passwordField erronea y espacios blancos ControllerSignIn.accionBoton");
             pswFieldContrasena.requestFocus();
             pswFieldContrasena.selectAll();
             //Mostrar un mensaje de error en el label.
-            lblErrorUsuarioContrasena.setStyle("-fx-text-inner-color: red");
             lblErrorUsuarioContrasena.setText("Contraseña incorrecta.");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorUsuarioContrasena.setTextFill(Color.web("#ff0000"));
         }else
             //Todos los campos cumplen la condición validar datos en la base de datos
             enviarDatosServidorBBDD();       
@@ -262,18 +265,24 @@ public class FXMLDocumentSignInController {
             pswFieldContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex1.getMessage());
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorUsuarioContrasena.setTextFill(Color.web("#ff0000"));
         } catch (ExcepcionPasswdIncorrecta ex2) {
             //Vaciar campos de texto
-            txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
+            pswFieldContrasena.requestFocus();
             //Colocar el texto de la excepción en el label
             lblErrorUsuarioContrasena.setText(ex2.getMessage());
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorUsuarioContrasena.setTextFill(Color.web("#ff0000"));
         } catch (Exception ex3){
             //Vaciar campos de texto
             txtFieldUsuario.setText("");
             pswFieldContrasena.setText("");
             //Colocar el texto de la excepción en el label
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorExcepcion.setTextFill(Color.web("#ff0000"));
         }
     }
 
@@ -302,6 +311,8 @@ public class FXMLDocumentSignInController {
         //Error al cargar la nueva escena, mostrar mensaje.
         }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorExcepcion.setTextFill(Color.web("#ff0000"));
         }
     }
 
@@ -328,60 +339,8 @@ public class FXMLDocumentSignInController {
         //Error al cargar la nueva escenamostrar mensaje.
         }catch(IOException e){
             lblErrorExcepcion.setText("Se ha producido un error. Lo sentimos. Inténtalo mas tarde");
+            //Cambia de color el texto del label, en este caso a rojo
+            lblErrorExcepcion.setTextFill(Color.web("#ff0000"));
         }
     }
-          
-    /**
-     * Comprueba que el texto de un campo no tenga espacios intermedios.
-     * @param field Un campo de texto.
-     * @return Un boolean true si hay espacios en blanco en el texto, false si por el contrario no los hay.
-     */
-    private Boolean comprobarEspaciosBlancos(TextField field) {
-        LOGGER.info("Iniciando ControllerSignIn.ComprobaEspaciosBlancos");
-        //Guardamos valos textField en string sin espacios delante ni detras.
-        String textoSinEspacios = field.getText().trim();
-        //VAriable de retorno. Inicializar a false
-        Boolean textoCorrecto = true;
-        //ForEach de character. Recorremos letra a letra
-        for(Character t:textoSinEspacios.toCharArray()){
-            LOGGER.info("Recorrer el texto para buscar espacios. ControllerSignIn.ComprobaEspaciosBlancos");
-            //Condición de igualdad. Propiedad equals de Character. Si el caracter actual igual a espacio.
-            if(t.equals(' '))
-                textoCorrecto = false;
-        }
-        return textoCorrecto;
-    }
-           
-      /**
-     * Comprueba que el texto de un campo no tenga más caracteres que el Integer pasado como parámetro.
-     * @param field Un campo de texto.
-     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres superan el preestablecido.
-     */
-    private Boolean maximoCaracteres(TextField field,Integer max) {
-        LOGGER.info("Iniciando ControllerSignIn.maximoCaracteres");
-        //booleano iniciado a true. Por defecto cumple la condición
-        Boolean numeroCaracteresCorrectos = true;
-        //si el texto del textfield quitados los espacios delante y detrás su longitud mayor a lo preestablecido error
-        if(field.getText().trim().length()>max){
-            //booleana a false
-                numeroCaracteresCorrectos = false;
-        }
-        return numeroCaracteresCorrectos;
-    }
-    
-    /**
-     * Comprueba que el texto de un campo no tenga menos caracteres que el Integer pasado como parámetro.
-     * @param field Un campo de texto.
-     * @return Un boolean true si contiene los caracteres deseados, false si los caracteres son menos que el preestablecido.
-     */
-    private Boolean minimoCaracteres(TextField field, Integer min) {
-        LOGGER.info("Iniciando ControllerSignIn.minimoCaracteres");
-        //booleano iniciado a true.
-        Boolean numeroCaracteresCorrectos = true;
-        if(field.getText().trim().length()< min){
-                numeroCaracteresCorrectos = false;
-        }
-        return numeroCaracteresCorrectos;
-    }
-    
 }

@@ -1,6 +1,4 @@
-/**
- *Contiene la aplicación de la aplicación Cliente del proyecto SignInSignUp
- */
+
 package application;
 
 import controlador.FXMLDocumentSignInController;
